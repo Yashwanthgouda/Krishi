@@ -40,9 +40,12 @@ app.post('/api/crop', async (req, res) => {
     res.json(response.data);
   } catch (err) {
     console.error('Crop API error:', err.message);
-    const msg = err.code === 'ECONNABORTED' || err.message.includes('timeout')
-      ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-      : `Cannot reach Flask server at ${FLASK_URL}. Did you set the FLASK_URL env var on Render?`;
+    const flaskError = err.response?.data?.error;
+    const msg = flaskError 
+      ? `ML Server: ${flaskError}`
+      : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
+        ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+        : `Cannot reach Flask server. Did you set the FLASK_URL env var on Render?`;
     res.status(500).json({ success: false, error: msg });
   }
 });
@@ -58,9 +61,12 @@ app.post('/api/fertilizer', async (req, res) => {
     res.json(response.data);
   } catch (err) {
     console.error('Fertilizer API error:', err.message);
-    const msg = err.code === 'ECONNABORTED' || err.message.includes('timeout')
-      ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-      : `Cannot reach Flask server at ${FLASK_URL}. Did you set the FLASK_URL env var on Render?`;
+    const flaskError = err.response?.data?.error;
+    const msg = flaskError 
+      ? `ML Server: ${flaskError}`
+      : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
+        ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+        : `Cannot reach Flask server. Did you set the FLASK_URL env var on Render?`;
     res.status(500).json({ success: false, error: msg });
   }
 });
@@ -93,9 +99,12 @@ app.post('/api/disease', upload.single('image'), async (req, res) => {
     res.json(response.data);
   } catch (err) {
     console.error('Disease API error:', err.message);
-    const msg = err.code === 'ECONNABORTED' || err.message.includes('timeout')
-      ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-      : `Cannot reach Flask server at ${FLASK_URL}. Did you set the FLASK_URL env var on Render?`;
+    const flaskError = err.response?.data?.error;
+    const msg = flaskError 
+      ? `ML Server: ${flaskError}`
+      : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
+        ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+        : `Cannot reach Flask server. Did you set the FLASK_URL env var on Render?`;
     res.status(500).json({ success: false, error: msg });
   }
 });
@@ -111,9 +120,12 @@ app.post('/api/price', async (req, res) => {
     res.json(response.data);
   } catch (err) {
     console.error('Price API error:', err.message);
-    const msg = err.code === 'ECONNABORTED' || err.message.includes('timeout')
-      ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-      : `Cannot reach Flask server at ${FLASK_URL}. Did you set the FLASK_URL env var on Render?`;
+    const flaskError = err.response?.data?.error;
+    const msg = flaskError 
+      ? `ML Server: ${flaskError}`
+      : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
+        ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+        : `Cannot reach Flask server. Did you set the FLASK_URL env var on Render?`;
     res.status(500).json({ success: false, error: msg });
   }
 });
