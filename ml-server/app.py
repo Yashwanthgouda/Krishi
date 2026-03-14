@@ -573,9 +573,11 @@ def list_diseases():
     return jsonify({'diseases': DISEASES})
 
 
+# Load models at module level so Gunicorn loads them when starting
+print('Training/Loading crop recommendation model...')
+load_crop_model()
+print('ML models ready!')
+
 if __name__ == '__main__':
-    print('Starting Krishi ML Server...')
-    print('Training crop recommendation model...')
-    load_crop_model()
-    print('ML models ready!')
+    print('Starting Krishi ML Server on Localhost...')
     app.run(host='0.0.0.0', port=5001, debug=False)
