@@ -35,12 +35,15 @@ app.get('/api/health', (req, res) => {
 app.post('/api/crop', async (req, res) => {
   try {
     const response = await axios.post(`${FLASK_URL}/predict/crop`, req.body, {
-      timeout: 10000,
+      timeout: 60000,
     });
     res.json(response.data);
   } catch (err) {
     console.error('Crop API error:', err.message);
-    res.status(500).json({ success: false, error: 'ML server unavailable. Please start the Flask server.' });
+    const msg = err.code === 'ECONNABORTED' || err.message.includes('timeout')
+      ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+      : `Cannot reach Flask server at ${FLASK_URL}. Did you set the FLASK_URL env var on Render?`;
+    res.status(500).json({ success: false, error: msg });
   }
 });
 
@@ -50,12 +53,15 @@ app.post('/api/crop', async (req, res) => {
 app.post('/api/fertilizer', async (req, res) => {
   try {
     const response = await axios.post(`${FLASK_URL}/predict/fertilizer`, req.body, {
-      timeout: 10000,
+      timeout: 60000,
     });
     res.json(response.data);
   } catch (err) {
     console.error('Fertilizer API error:', err.message);
-    res.status(500).json({ success: false, error: 'ML server unavailable.' });
+    const msg = err.code === 'ECONNABORTED' || err.message.includes('timeout')
+      ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+      : `Cannot reach Flask server at ${FLASK_URL}. Did you set the FLASK_URL env var on Render?`;
+    res.status(500).json({ success: false, error: msg });
   }
 });
 
@@ -73,13 +79,13 @@ app.post('/api/disease', upload.single('image'), async (req, res) => {
       });
       response = await axios.post(`${FLASK_URL}/predict/disease`, formData, {
         headers: formData.getHeaders(),
-        timeout: 15000,
+        timeout: 60000,
       });
     } else if (req.body.imageBase64) {
       response = await axios.post(
         `${FLASK_URL}/predict/disease`,
         { imageBase64: req.body.imageBase64 },
-        { timeout: 15000 }
+        { timeout: 60000 }
       );
     } else {
       return res.status(400).json({ success: false, error: 'No image provided' });
@@ -87,7 +93,10 @@ app.post('/api/disease', upload.single('image'), async (req, res) => {
     res.json(response.data);
   } catch (err) {
     console.error('Disease API error:', err.message);
-    res.status(500).json({ success: false, error: 'Disease detection failed. Check ML server.' });
+    const msg = err.code === 'ECONNABORTED' || err.message.includes('timeout')
+      ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+      : `Cannot reach Flask server at ${FLASK_URL}. Did you set the FLASK_URL env var on Render?`;
+    res.status(500).json({ success: false, error: msg });
   }
 });
 
@@ -97,12 +106,15 @@ app.post('/api/disease', upload.single('image'), async (req, res) => {
 app.post('/api/price', async (req, res) => {
   try {
     const response = await axios.post(`${FLASK_URL}/predict/price`, req.body, {
-      timeout: 15000,
+      timeout: 60000,
     });
     res.json(response.data);
   } catch (err) {
     console.error('Price API error:', err.message);
-    res.status(500).json({ success: false, error: 'Price forecasting failed.' });
+    const msg = err.code === 'ECONNABORTED' || err.message.includes('timeout')
+      ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+      : `Cannot reach Flask server at ${FLASK_URL}. Did you set the FLASK_URL env var on Render?`;
+    res.status(500).json({ success: false, error: msg });
   }
 });
 
