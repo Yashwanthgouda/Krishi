@@ -341,7 +341,7 @@ def analyze_image_disease(image_bytes):
 
         # Pick top disease
         top_disease_name = max(scores, key=scores.get)
-        confidence = round(scores[top_disease_name] * 100, 1)
+        confidence = round(float(scores[top_disease_name]) * 100, 1)
 
         disease_info = next((d for d in DISEASES if d['name'] == top_disease_name), DISEASES[0])
         alternatives = sorted(
@@ -353,13 +353,13 @@ def analyze_image_disease(image_bytes):
             'detected': True,
             'disease': {
                 **disease_info,
-                'confidence': confidence,
+                'confidence': float(confidence),
             },
             'alternatives': [
-                {'name': n, 'confidence': round(v * 100, 1)}
+                {'name': n, 'confidence': round(float(v) * 100, 1)}
                 for n, v in alternatives
             ],
-            'isHealthy': green_ratio > 0.6 and brown_ratio < 0.05 and yellow_ratio < 0.05,
+            'isHealthy': bool(green_ratio > 0.6 and brown_ratio < 0.05 and yellow_ratio < 0.05),
         }
 
     except Exception as e:
