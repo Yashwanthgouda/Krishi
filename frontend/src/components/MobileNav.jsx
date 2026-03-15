@@ -4,10 +4,10 @@ import { useLang } from '../context/LanguageContext';
 
 const MOBILE_ITEMS = [
   { to: '/', icon: '🏠', labelKey: 'dashboard' },
-  { to: '/crop', icon: '🌾', labelKey: 'advisor' },
+  { to: '/crop', icon: '🌾', labelKey: 'cropAdvisor' },
   { to: '/weather', icon: '🌤️', labelKey: 'weather' },
-  { to: '/market', icon: '📊', labelKey: 'market' },
-  { to: '/voice', icon: '🎤', labelKey: 'voice' },
+  { to: '/market', icon: '📊', labelKey: 'marketPrices' },
+  { to: '/voice', icon: '🎤', labelKey: 'voiceAssistant' },
 ];
 
 export default function MobileNav() {

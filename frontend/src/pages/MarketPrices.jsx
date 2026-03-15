@@ -44,10 +44,10 @@ export default function MarketPrices() {
         setResult(data);
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       } else {
-        setError(data.error || 'Failed to fetch forecast');
+        setError(data.error || t('fetchForecastFailed'));
       }
     } catch {
-      setError('Cannot reach server. Please try again later.');
+      setError(t('serverError'));
     } finally { setLoading(false); }
   };
 
@@ -60,7 +60,7 @@ export default function MarketPrices() {
     <div className="result-panel">
       <header style={{ marginBottom: '2.5rem' }}>
         <h1 className="section-title">📊 {t('marketPrices')}</h1>
-        <p className="section-subtitle">AI-powered price forecasting to help you time your harvest for maximum profit.</p>
+        <p className="section-subtitle">{t('marketSubtitle')}</p>
       </header>
 
       <form onSubmit={handleSubmit}>
@@ -87,7 +87,7 @@ export default function MarketPrices() {
           
           <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
             <button type="submit" className="btn btn-primary" style={{ width: 'auto', padding: '1rem 2rem' }} disabled={loading}>
-              {loading ? 'Calculating...' : 'Generate Market Forecast'}
+              {loading ? t('calculating') : t('generateForecast')}
             </button>
           </div>
         </div>
@@ -100,26 +100,26 @@ export default function MarketPrices() {
           {/* Price Summary Grid */}
           <div className="grid-cols-4" style={{ marginBottom: '2rem' }}>
             <div className="card stat-card">
-              <div className="stat-label">Current Price</div>
+              <div className="stat-label">{t('currentPrice')}</div>
               <div className="stat-value">₹{result.currentPrice?.toLocaleString('en-IN')}</div>
-              <div className="stat-trend">Per Quintal</div>
+              <div className="stat-trend">{t('perQuintal')}</div>
             </div>
             <div className="card stat-card">
-              <div className="stat-label">Govt. MSP</div>
+              <div className="stat-label">{t('msp')}</div>
               <div className="stat-value">₹{result.msp?.toLocaleString('en-IN')}</div>
-              <div className="stat-trend" style={{ color: 'var(--primary)' }}>Guaranteed</div>
+              <div className="stat-trend" style={{ color: 'var(--primary)' }}>{t('guaranteed')}</div>
             </div>
             <div className="card stat-card">
-              <div className="stat-label">6-Month Trend</div>
+              <div className="stat-label">{t('sixMonthTrend')}</div>
               <div className={`stat-value ${result.trend === 'Rising' ? 'up' : 'down'}`} style={{ color: result.trend === 'Rising' ? 'var(--success)' : 'var(--error)' }}>
                 {result.trend === 'Rising' ? '↑' : '↓'} {result.trend}
               </div>
               <div className="stat-trend">{result.trendPercent}% Change</div>
             </div>
             <div className="card stat-card">
-              <div className="stat-label">Market Status</div>
-              <div className="stat-value" style={{ fontSize: '1.5rem' }}>BULISH 🐂</div>
-              <div className="stat-trend">High Demand</div>
+              <div className="stat-label">{t('marketStatus')}</div>
+              <div className="stat-value" style={{ fontSize: '1.5rem' }}>{result.trend === 'Rising' ? t('bullish') : t('bearish')}</div>
+              <div className="stat-trend">{t('highDemand')}</div>
             </div>
           </div>
 
@@ -127,7 +127,7 @@ export default function MarketPrices() {
           <div className="grid-cols-2" style={{ marginBottom: '2rem' }}>
             <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
               <div className="card-title">
-                <span className="card-icon">📈</span> Price Projection 
+                <span className="card-icon">📈</span> {t('priceProj')}
               </div>
               <div style={{ flex: 1, height: '300px', marginTop: '1rem' }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -150,13 +150,13 @@ export default function MarketPrices() {
 
             <div className="card" style={{ background: 'var(--primary-light)', borderColor: 'var(--primary)' }}>
               <div className="card-title" style={{ color: 'var(--primary)' }}>
-                <span className="card-icon" style={{ background: 'white' }}>💡</span> Market Advisory
+                <span className="card-icon" style={{ background: 'white' }}>💡</span> {t('marketAdviceText')}
               </div>
               <p style={{ fontSize: '1.125rem', lineHeight: 1.8, color: 'var(--text-main)', fontWeight: 600 }}>{result.advice}</p>
               <div style={{ marginTop: '2rem' }}>
-                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Recommended Strategy:</p>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{t('recStrategy')}</p>
                 <div className="card" style={{ background: 'white', border: '1px solid var(--border)', padding: '1rem' }}>
-                  <p style={{ fontSize: '0.875rem' }}>Consider staggered selling over the next 3 months to normalize price volatility.</p>
+                  <p style={{ fontSize: '0.875rem' }}>{t('staggeredSell')}</p>
                 </div>
               </div>
             </div>

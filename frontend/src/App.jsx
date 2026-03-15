@@ -37,7 +37,6 @@ export default function App() {
             </main>
           </div>
           <MobileNav />
-          <VoiceButton />
         </div>
       </BrowserRouter>
     </LanguageProvider>

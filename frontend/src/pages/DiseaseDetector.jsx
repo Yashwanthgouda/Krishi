@@ -63,10 +63,10 @@ export default function DiseaseDetector() {
         setResult(data);
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       } else {
-        setError(data.error || 'Analysis failed');
+        setError(data.error || t('analysisFailed'));
       }
     } catch {
-      setError('Cannot reach server. Please try again later.');
+      setError(t('serverError'));
     } finally { setLoading(false); }
   };
 
@@ -80,14 +80,14 @@ export default function DiseaseDetector() {
     <div className="result-panel">
       <header style={{ marginBottom: '2.5rem' }}>
         <h1 className="section-title">🔬 {t('diseaseDetector')}</h1>
-        <p className="section-subtitle">Identify plant health issues instantly using our computer vision models.</p>
+        <p className="section-subtitle">{t('detectorSubtitle')}</p>
       </header>
 
       {/* Main Upload / Camera View */}
       <div className="grid-cols-2" style={{ marginBottom: '2rem' }}>
         <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
           <div className="card-title">
-            <span className="card-icon">📸</span> Capture & Analyze
+            <span className="card-icon">📸</span> {t('captureAnalyze')}
           </div>
           
           {camActive ? (
@@ -108,12 +108,12 @@ export default function DiseaseDetector() {
                     style={{ position: 'absolute', top: '1rem', right: '1rem', width: 'auto', background: 'white', padding: '0.5rem' }}
                     onClick={() => { setPreview(null); setImageFile(null); setResult(null); }}
                   >
-                    ✕ Remove
+                    ✕ {t('remove')}
                   </button>
                   {loading && (
                     <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', flexDirection: 'column', gap: '1rem' }}>
                       <div className="spinner" style={{ width: 40, height: 40, borderWidth: 4 }} />
-                      <p style={{ fontWeight: 700 }}>AI Scanning Leaf Architecture...</p>
+                      <p style={{ fontWeight: 700 }}>{t('analyzing')}</p>
                     </div>
                   )}
                 </div>
@@ -121,20 +121,20 @@ export default function DiseaseDetector() {
                 <div className={`upload-zone${isDragActive ? ' drag-active' : ''}`} {...getRootProps()} style={{ padding: '4rem 2rem' }}>
                   <input {...getInputProps()} />
                   <div className="upload-zone-icon" style={{ fontSize: '4rem' }}>🍃</div>
-                  <h3 style={{ marginBottom: '0.5rem' }}>Drop leaf photo here</h3>
-                  <p className="upload-zone-sub">or click to browse from gallery</p>
+                  <h3 style={{ marginBottom: '0.5rem' }}>{t('uploadLeaf')}</h3>
+                  <p className="upload-zone-sub">{t('browseGallery')}</p>
                 </div>
               )}
 
               <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                <button className="btn btn-outline" onClick={openCamera} style={{ flex: 1 }}>📷 Camera</button>
+                <button className="btn btn-outline" onClick={openCamera} style={{ flex: 1 }}>📷 {t('camera')}</button>
                 <button 
                   className="btn btn-primary" 
                   onClick={analyze} 
                   disabled={!imageFile || loading}
                   style={{ flex: 1.5 }}
                 >
-                  {loading ? 'Analyzing...' : 'Diagnose Disease'}
+                  {loading ? t('analyzing') : t('diagnose')}
                 </button>
               </div>
             </>
@@ -144,16 +144,15 @@ export default function DiseaseDetector() {
         {/* Info / FAQ Card */}
         <div className="card">
           <div className="card-title">
-            <span className="card-icon">💡</span> How it works
+            <span className="card-icon">💡</span> {t('howItWorks')}
           </div>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.8 }}>
-            Our deep learning models are trained on over 50,000 images of infected crops. 
-            For best results:
+            {t('howItWorksText')}
           </p>
           <ul style={{ paddingLeft: '1.5rem', marginTop: '1rem', fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <li>Ensure the leaf is well-lit and in focus.</li>
-            <li>Place the leaf against a neutral background.</li>
-            <li>Focus on the infected part of the plant.</li>
+            <li>{t('tip1')}</li>
+            <li>{t('tip2')}</li>
+            <li>{t('tip3')}</li>
           </ul>
         </div>
       </div>
@@ -166,8 +165,8 @@ export default function DiseaseDetector() {
           {result.isHealthy ? (
             <div className="card" style={{ textAlign: 'center', padding: '3rem', borderLeft: '8px solid var(--success)' }}>
               <div style={{ fontSize: '4rem' }}>🌿</div>
-              <h2 style={{ fontSize: '2rem', margin: '1rem 0', color: 'var(--success)' }}>Target looks healthy!</h2>
-              <p style={{ color: 'var(--text-secondary)' }}>No symptoms of common diseases detected. Keep up the good work!</p>
+              <h2 style={{ fontSize: '2rem', margin: '1rem 0', color: 'var(--success)' }}>{t('healthyTarget')}</h2>
+              <p style={{ color: 'var(--text-secondary)' }}>{t('noSymptoms')}</p>
             </div>
           ) : (
             <div className="grid-cols-2">
@@ -185,29 +184,29 @@ export default function DiseaseDetector() {
                       color: getSeverityStyle(result.disease.severity).color,
                       border: `1px solid ${getSeverityStyle(result.disease.severity).border}`
                     }}>
-                      {result.disease.severity.toUpperCase()} SEVERITY
+                      {result.disease.severity.toUpperCase()} {t('severityLabel')}
                     </span>
                   </div>
                 </header>
 
                 <div className="disease-section">
-                  <div className="disease-section-label">AI Confidence</div>
+                  <div className="disease-section-label">{t('aiConfidence')}</div>
                   <div className="progress-bar-track" style={{ marginBottom: '1.5rem' }}>
                     <div className="progress-bar-fill" style={{ width: `${result.disease.confidence}%` }} />
                   </div>
-                  <div className="disease-section-label">Primary Symptoms</div>
+                  <div className="disease-section-label">{t('primarySymptoms')}</div>
                   <p className="disease-section-text">{result.disease.symptoms}</p>
                 </div>
               </div>
 
               <div className="card" style={{ background: 'var(--primary-light)', borderColor: 'var(--primary)' }}>
                 <div className="card-title" style={{ color: 'var(--primary)' }}>
-                  <span className="card-icon" style={{ background: 'white' }}>💊</span> Treatment Plan
+                  <span className="card-icon" style={{ background: 'white' }}>💊</span> {t('treatmentPlan')}
                 </div>
                 <p style={{ fontSize: '1rem', lineHeight: 1.8, color: 'var(--text-main)' }}>{result.disease.treatment}</p>
                 
                 <div style={{ marginTop: '2rem' }}>
-                  <div className="disease-section-label">Affected Crops</div>
+                  <div className="disease-section-label">{t('affectedCrops')}</div>
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
                     {result.disease.crops?.map(c => <span key={c} className="tag" style={{ background: 'white', border: '1px solid var(--border)', color: 'var(--text-main)' }}>{c}</span>)}
                   </div>

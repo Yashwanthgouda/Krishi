@@ -35,10 +35,10 @@ export default function CropAdvisor() {
         setResult(data);
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
       } else {
-        setError(data.error || 'Prediction failed');
+        setError(data.error || t('predictionFailed'));
       }
     } catch (err) {
-      setError('Cannot reach server. Please try again later.');
+      setError(t('serverError'));
     } finally {
       setLoading(false);
     }
@@ -74,29 +74,29 @@ export default function CropAdvisor() {
     <div className="result-panel">
       <header style={{ marginBottom: '2.5rem' }}>
         <h1 className="section-title">🌾 {t('cropAdvisor')}</h1>
-        <p className="section-subtitle">Our AI analyzes your soil and climate data to suggest the most profitable crops.</p>
+        <p className="section-subtitle">{t('advisorSubtitle')}</p>
       </header>
 
       <form onSubmit={handleSubmit}>
         <div className="grid-cols-2" style={{ marginBottom: '2rem' }}>
           <div className="card">
             <div className="card-title">
-              <span className="card-icon">🌱</span> Soil Parameters
+              <span className="card-icon">🌱</span> {t('soilParams')}
             </div>
             {SOIL_FIELDS.map(renderField)}
           </div>
 
           <div className="card">
             <div className="card-title">
-              <span className="card-icon">🌦️</span> Climate Conditions
+              <span className="card-icon">🌦️</span> {t('climateCond')}
             </div>
             {CLIMATE_FIELDS.map(renderField)}
             
             <div style={{ marginTop: '2rem' }}>
               <button type="submit" className="btn btn-primary" style={{ padding: '1.25rem', fontSize: '1rem' }} disabled={loading}>
                 {loading ? (
-                  <><span className="spinner" style={{ width: 20, height: 20, borderWidth: 3 }} /> Analyzing...</>
-                ) : `✨ Get AI Recommendation`}
+                  <><span className="spinner" style={{ width: 20, height: 20, borderWidth: 3 }} /> {t('analyzing')}</>
+                ) : `✨ ${t('getAiRec')}`}
               </button>
             </div>
           </div>
@@ -114,19 +114,19 @@ export default function CropAdvisor() {
           <div className="crop-hero-card">
             <div className="crop-hero-icon">{result.recommendations[0].icon}</div>
             <div style={{ flex: 1 }}>
-              <p style={{ textTransform: 'uppercase', fontWeight: 800, opacity: 0.8, fontSize: '0.875rem' }}>Top Recommendation</p>
+              <p style={{ textTransform: 'uppercase', fontWeight: 800, opacity: 0.8, fontSize: '0.875rem' }}>{t('topRec')}</p>
               <h2 style={{ fontSize: '3rem', margin: '0.5rem 0', color: 'white' }}>{result.recommendations[0].crop.toUpperCase()}</h2>
               <div style={{ display: 'flex', gap: '1rem' }}>
-                <span className="tag">📅 {result.recommendations[0].season}</span>
-                <span className="tag">💧 {result.recommendations[0].waterRequirement} Water</span>
-                <span className="tag" style={{ background: 'var(--accent)', color: 'var(--text-main)' }}>🎯 {result.recommendations[0].confidence}% Match</span>
+                <span className="tag">📅 {t('season')}: {result.recommendations[0].season}</span>
+                <span className="tag">💧 {result.recommendations[0].waterRequirement} {t('water')}</span>
+                <span className="tag" style={{ background: 'var(--accent)', color: 'var(--text-main)' }}>🎯 {result.recommendations[0].confidence}% {t('confidence')}</span>
               </div>
             </div>
           </div>
 
           <div className="card">
             <div className="card-title">
-              <span className="card-icon">📋</span> Suggestions for Your Soil
+              <span className="card-icon">📋</span> {t('soilSuggestions')}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {result.recommendations.map((r, i) => (

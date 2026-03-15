@@ -45,11 +45,26 @@ export default function Sidebar({ isOpen, onClose }) {
           ))}
         </nav>
 
-        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border)' }}>
+        <div style={{ padding: '1.5rem', borderTop: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div className="card" style={{ padding: '1rem', background: 'var(--bg)', border: 'none' }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Need help?</p>
-            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>Contact our agri-experts anytime.</p>
-            <button className="btn btn-outline" style={{ fontSize: '0.7rem', padding: '0.5rem' }}>Support</button>
+            <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>{t('needHelp')}</p>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>{t('supportText')}</p>
+            <button className="btn btn-outline" style={{ fontSize: '0.7rem', padding: '0.5rem' }}>{t('support')}</button>
+          </div>
+
+          <div style={{ padding: '0.5rem', background: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)' }}>
+            <p style={{ fontSize: '0.6rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>{t('systemStatus')}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} />
+              <p style={{ fontSize: '0.6rem', fontWeight: 600, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {t('backendLabel')}: {import.meta.env.VITE_API_URL || 'Local (Proxy)'}
+              </p>
+            </div>
+            {import.meta.env.VITE_API_URL && (
+              <p style={{ fontSize: '0.5rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                {t('backendMatch')}
+              </p>
+            )}
           </div>
         </div>
       </aside>
