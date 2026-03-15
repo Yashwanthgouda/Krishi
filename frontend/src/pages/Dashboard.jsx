@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useLang } from '../context/LanguageContext';
 
 export default function Dashboard() {
