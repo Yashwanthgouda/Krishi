@@ -60,8 +60,8 @@ app.post('/api/crop', async (req, res) => {
     const flaskError = err.response?.data?.error;
     const msg = flaskError 
       ? `ML Server: ${flaskError}`
-      : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
-        ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+      : (err.code === 'ECONNABORTED' || err.message.includes('timeout') || err.response?.status === 502)
+        ? 'Flask ML server is waking up (Render cold start). Please try again in 30-60 seconds.'
         : `Backend Error: Cannot reach Flask server at ${FLASK_URL}. Details: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
@@ -81,8 +81,8 @@ app.post('/api/fertilizer', async (req, res) => {
     const flaskError = err.response?.data?.error;
     const msg = flaskError 
       ? `ML Server: ${flaskError}`
-      : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
-        ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+      : (err.code === 'ECONNABORTED' || err.message.includes('timeout') || err.response?.status === 502)
+        ? 'Flask ML server is waking up (Render cold start). Please try again in 30-60 seconds.'
         : `Backend Error: Cannot reach Flask server at ${FLASK_URL}. Details: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
@@ -119,8 +119,8 @@ app.post('/api/disease', upload.single('image'), async (req, res) => {
     const flaskError = err.response?.data?.error;
     const msg = flaskError 
       ? `ML Server: ${flaskError}`
-      : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
-        ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+      : (err.code === 'ECONNABORTED' || err.message.includes('timeout') || err.response?.status === 502)
+        ? 'Flask ML server is waking up (Render cold start). Please try again in 30-60 seconds.'
         : `Backend Error: Cannot reach Flask server at ${FLASK_URL}. Details: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
@@ -140,8 +140,8 @@ app.post('/api/price', async (req, res) => {
     const flaskError = err.response?.data?.error;
     const msg = flaskError 
       ? `ML Server: ${flaskError}`
-      : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
-        ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
+      : (err.code === 'ECONNABORTED' || err.message.includes('timeout') || err.response?.status === 502)
+        ? 'Flask ML server is waking up (Render cold start). Please try again in 30-60 seconds.'
         : `Backend Error: Cannot reach Flask server at ${FLASK_URL}. Details: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
