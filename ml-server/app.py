@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import random
 import joblib
 
 app = Flask(__name__)
@@ -99,7 +100,7 @@ def train_crop_model():
 
     X, y = [], []
     for crop, (n_r, p_r, k_r, t_r, h_r, ph_r, rain_r) in crop_params.items():
-        for _ in range(200):
+        for _ in range(50):
             X.append([
                 random.uniform(*n_r),
                 random.uniform(*p_r),
