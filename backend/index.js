@@ -10,10 +10,10 @@ const multer = require('multer');
 const FormData = require('form-data');
 
 const app = express();
-// Trigger redeploy 2026-03-15 (v2)
-console.log('Using FLASK_URL:', FLASK_URL);
 const PORT = process.env.PORT || 5000;
 let FLASK_URL = process.env.FLASK_URL || 'http://localhost:5001';
+// Trigger redeploy 2026-03-15 (v2)
+console.log('Using FLASK_URL:', FLASK_URL);
 
 // Remove trailing slash if present to avoid double slashes in routes
 if (FLASK_URL.endsWith('/')) {
