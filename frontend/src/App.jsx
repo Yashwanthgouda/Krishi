@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
+import MobileNav from './components/MobileNav';
 import VoiceButton from './components/VoiceButton';
 import Dashboard from './pages/Dashboard';
 import CropAdvisor from './pages/CropAdvisor';
@@ -14,13 +15,15 @@ import VoiceAssistant from './pages/VoiceAssistant';
 import './index.css';
 
 export default function App() {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <LanguageProvider>
       <BrowserRouter>
         <div className="app-container">
-          <Sidebar />
+          <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
           <div className="main-content">
-            <Header />
+            <Header onMenuClick={() => setSidebarOpen(true)} />
             <main className="content-inner">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
@@ -33,6 +36,7 @@ export default function App() {
               </Routes>
             </main>
           </div>
+          <MobileNav />
           <VoiceButton />
         </div>
       </BrowserRouter>
