@@ -3,28 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { useLang } from '../context/LanguageContext';
 
 const COMMANDS = [
-  { text: 'Say "crop" → Opens Crop Advisor', icon: '🌾' },
-  { text: 'Say "fertilizer" → Opens Fertilizer Guide', icon: '🧪' },
-  { text: 'Say "weather" → Opens Weather Forecast', icon: '🌤️' },
-  { text: 'Say "disease" → Opens Disease Detector', icon: '🔬' },
-  { text: 'Say "market" → Opens Market Prices', icon: '📊' },
-  { text: 'Say "home" → Back to Dashboard', icon: '🏠' },
+  { text: 'Say "crop"', icon: '🌾' },
+  { text: 'Say "fertilizer"', icon: '🧪' },
+  { text: 'Say "weather"', icon: '🌤️' },
+  { text: 'Say "disease"', icon: '🔬' },
+  { text: 'Say "market"', icon: '📊' },
+  { text: 'Say "home"', icon: '🏠' },
 ];
 
 const LANG_COMMANDS = {
-  en: ['crop', 'fertilizer', 'weather', 'disease', 'market', 'home'],
-  hi: ['फसल', 'खाद', 'मौसम', 'रोग', 'बाज़ार', 'होम'],
-  kn: ['ಬೆಳೆ', 'ಗೊಬ್ಬರ', 'ಹವಾಮಾನ', 'ರೋಗ', 'ಮಾರುಕಟ್ಟೆ', 'ಮನೆ'],
-  te: ['పంట', 'ఎరువు', 'వాతావరణం', 'వ్యాధి', 'మార్కెట్', 'హోమ్'],
+  en: ['Crop', 'Fertilizer', 'Weather', 'Disease', 'Market', 'Home'],
+  hi: ['Fasal (फसल)', 'Khaad (खाद)', 'Mausam (मौसम)', 'Rog (रोग)', 'Baazaar (बाज़ार)', 'Home (होम)'],
+  kn: ['Bele (ಬೆಳೆ)', 'Gobbara (ಗೊಬ್ಬರ)', 'Havaamaana (ಹವಾಮಾನ)', 'Roga (ರೋಗ)', 'Maarukatte (ಮಾರುಕಟ್ಟೆ)', 'Mane (ಮನೆ)'],
 };
 
 const ROUTE_MAP = {
-  crop: '/crop', फसल: '/crop', ಬೆಳೆ: '/crop', పంట: '/crop',
-  fertilizer: '/fertilizer', खाद: '/fertilizer', ಗೊಬ್ಬರ: '/fertilizer', ఎరువు: '/fertilizer',
-  weather: '/weather', मौसम: '/weather', ಹವಾಮಾನ: '/weather', వాతావరణం: '/weather',
-  disease: '/disease', रोग: '/disease', ರೋಗ: '/disease', వ్యాధి: '/disease',
-  market: '/market', 'बाज़ार': '/market', ಮಾರುಕಟ್ಟೆ: '/market', మార్కెట్: '/market',
-  home: '/', होम: '/', ಮನೆ: '/', హోమ్: '/',
+  crop: '/crop', फसल: '/crop', ಬೆಳೆ: '/crop',
+  fertilizer: '/fertilizer', खाद: '/fertilizer', ಗೊಬ್ಬರ: '/fertilizer',
+  weather: '/weather', मौसम: '/weather', ಹವಾಮಾನ: '/weather',
+  disease: '/disease', रोग: '/disease', ರೋಗ: '/disease',
+  market: '/market', 'बाज़ार': '/market', ಮಾರುಕಟ್ಟೆ: '/market',
+  home: '/', होम: '/', ಮನೆ: '/',
 };
 
 export default function VoiceAssistant() {
@@ -37,7 +36,7 @@ export default function VoiceAssistant() {
 
   const speak = (text) => {
     const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = lang === 'hi' ? 'hi-IN' : lang === 'kn' ? 'kn-IN' : lang === 'te' ? 'te-IN' : 'en-IN';
+    utter.lang = lang === 'hi' ? 'hi-IN' : lang === 'kn' ? 'kn-IN' : 'en-IN';
     window.speechSynthesis?.speak(utter);
   };
 
@@ -46,24 +45,28 @@ export default function VoiceAssistant() {
     for (const [keyword, route] of Object.entries(ROUTE_MAP)) {
       if (lower.includes(keyword.toLowerCase())) {
         setStatus('done');
-        setTranscript(`✅ Opening "${keyword}" ...`);
+        setTranscript(`✅ Found command: "${keyword}"`);
         speak(`Opening ${keyword}`);
         setTimeout(() => navigate(route), 1000);
         return;
       }
     }
     setStatus('error');
-    setTranscript(`"${text}" — not understood. Try: crop, fertilizer, weather, disease, market.`);
-  }, [navigate, lang]);
+    setTranscript(`"${text}" — Command not found.`);
+  }, [navigate]);
 
   const startListening = useCallback(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) { setStatus('error'); setTranscript('Speech recognition not supported in this browser. Use Chrome.'); return; }
+    if (!SpeechRecognition) { 
+      setStatus('error'); 
+      setTranscript('Speech recognition not supported in this browser.'); 
+      return; 
+    }
     const r = new SpeechRecognition();
     recognitionRef.current = r;
-    r.lang = lang === 'hi' ? 'hi-IN' : lang === 'kn' ? 'kn-IN' : lang === 'te' ? 'te-IN' : 'en-IN';
+    r.lang = lang === 'hi' ? 'hi-IN' : lang === 'kn' ? 'kn-IN' : 'en-IN';
     r.interimResults = true;
-    r.onstart = () => { setListening(true); setStatus('listening'); setTranscript(''); };
+    r.onstart = () => { setListening(true); setStatus('listening'); setTranscript('Go ahead, I\'m listening...'); };
     r.onresult = (e) => {
       const t = Array.from(e.results).map(r => r[0].transcript).join('');
       setTranscript(t);
@@ -82,49 +85,77 @@ export default function VoiceAssistant() {
   const langCommands = LANG_COMMANDS[lang] || LANG_COMMANDS.en;
 
   return (
-    <div className="page">
-      <h1 className="section-title">🎙️ {t('voiceAssistant')}</h1>
-      <p className="section-subtitle">{t('talkToUs')}</p>
+    <div className="result-panel">
+      <header style={{ marginBottom: '2.5rem' }}>
+        <h1 className="section-title">🎙️ {t('voiceAssistant')}</h1>
+        <p className="section-subtitle">Navigate through Krishi using simple voice commands in your preferred language.</p>
+      </header>
 
-      <div className="voice-page-center">
-        <button
-          className={`big-mic${listening ? ' listening' : ''}`}
-          onClick={listening ? stopListening : startListening}
-          aria-label="Voice input"
-        >
-          {listening ? '⏹' : '🎤'}
-        </button>
-
-        <div style={{ fontWeight: 600, fontSize: 16, color: status === 'error' ? 'var(--danger)' : status === 'done' ? 'var(--green-primary)' : 'var(--text-secondary)' }}>
-          {status === 'idle' && 'Tap the microphone to speak'}
-          {status === 'listening' && '🔴 Listening... speak now'}
-          {status === 'done' && '✅ Command recognized'}
-          {status === 'error' && '❌ Try again'}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2.5rem' }}>
+        {/* Animated Mic Section */}
+        <div style={{ position: 'relative' }}>
+          {listening && (
+            <div className="pulse" style={{ position: 'absolute', inset: '-20px', background: 'var(--primary)', opacity: 0.2, borderRadius: '50%' }} />
+          )}
+          <button
+            className={`big-mic ${listening ? 'listening' : ''}`}
+            onClick={listening ? stopListening : startListening}
+            style={{ 
+              width: '120px', height: '120px', borderRadius: '50%', border: 'none', 
+              background: listening ? 'var(--error)' : 'var(--primary)', 
+              color: 'white', fontSize: '3rem', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 8px 32px rgba(31, 122, 76, 0.3)',
+              transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }}
+          >
+            {listening ? '⏹' : '🎤'}
+          </button>
         </div>
 
-        {transcript && (
-          <div style={{ background: 'var(--green-pale)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '12px 16px', fontSize: 15, color: 'var(--text-primary)', width: '100%', textAlign: 'center', fontStyle: transcript.startsWith('✅') ? 'normal' : 'italic' }}>
-            {transcript || '...'}
+        <div style={{ textAlign: 'center' }}>
+          <p style={{ 
+            fontWeight: 800, fontSize: '1.25rem', 
+            color: status === 'error' ? 'var(--error)' : status === 'done' ? 'var(--primary)' : 'var(--text-main)' 
+          }}>
+            {status === 'idle' && 'Tap to start talking'}
+            {status === 'listening' && 'Recording...'}
+            {status === 'done' && 'Command Recognized!'}
+            {status === 'error' && 'Didn\'t catch that'}
+          </p>
+          
+          <div className="card" style={{ 
+            marginTop: '1.5rem', minWidth: '400px', minHeight: '80px', 
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'var(--bg)', borderStyle: 'dashed'
+          }}>
+            <p style={{ fontStyle: 'italic', color: 'var(--text-secondary)' }}>
+              {transcript || '"Try saying: Open Weather"'}
+            </p>
           </div>
-        )}
+        </div>
 
-        {/* Voice Commands Reference */}
+        {/* Command Reference Grid */}
         <div style={{ width: '100%' }}>
-          <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 10, color: 'var(--text-secondary)' }}>Available Commands ({lang.toUpperCase()}):</div>
-          <div className="voice-commands">
+          <h3 className="card-title" style={{ justifyContent: 'center', marginBottom: '1.5rem' }}>
+            Available Commands in {lang.toUpperCase()}
+          </h3>
+          <div className="grid-cols-3">
             {COMMANDS.map((c, i) => (
-              <div key={i} className="voice-cmd">
-                <span>{c.icon}</span> {c.text}
-                {langCommands[i] !== c.text.split('"')[1] && (
-                  <span style={{ color: 'var(--green-primary)', fontWeight: 600 }}> / "{langCommands[i]}"</span>
-                )}
+              <div key={i} className="card" style={{ textAlign: 'center', padding: '1.5rem' }}>
+                <span style={{ fontSize: '2rem', display: 'block', marginBottom: '0.75rem' }}>{c.icon}</span>
+                <p style={{ fontWeight: 800 }}>{langCommands[i]}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <button className="btn btn-outline" style={{ width: '100%' }} onClick={() => speak('Welcome to Krishi. Your smart farming assistant. Say crop, weather, fertilizer, disease, or market to navigate.')}>
-          🔊 Test Voice Output
+        <button 
+          className="btn btn-outline" 
+          style={{ width: 'auto', padding: '0.75rem 2rem' }}
+          onClick={() => speak('I am your Krishi voice assistant. How can I help you today?')}
+        >
+          🔊 Test Audio Output
         </button>
       </div>
     </div>

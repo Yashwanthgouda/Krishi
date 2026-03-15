@@ -4,3 +4,7 @@ dist
 .DS_Store
 __pycache__
 venv
+
+ml-server/models/*.pkl
+
+tmp/

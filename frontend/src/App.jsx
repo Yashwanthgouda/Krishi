@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
-import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import Header from './components/Header';
 import VoiceButton from './components/VoiceButton';
 import Dashboard from './pages/Dashboard';
 import CropAdvisor from './pages/CropAdvisor';
@@ -17,9 +18,10 @@ export default function App() {
     <LanguageProvider>
       <BrowserRouter>
         <div className="app-container">
-          <Navbar />
-          <div className="main-layout">
-            <main className="page">
+          <Sidebar />
+          <div className="main-content">
+            <Header />
+            <main className="content-inner">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/crop" element={<CropAdvisor />} />

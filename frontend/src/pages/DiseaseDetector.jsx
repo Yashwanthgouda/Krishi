@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { detectDisease } from '../services/api';
 import { useLang } from '../context/LanguageContext';
@@ -38,7 +38,7 @@ export default function DiseaseDetector() {
         }
       }, 100);
     } catch {
-      setError('Camera access denied.');
+      setError('Camera access denied. Please check site permissions.');
     }
   };
 
@@ -59,114 +59,163 @@ export default function DiseaseDetector() {
     setLoading(true); setError('');
     try {
       const data = await detectDisease(imageFile);
-      if (data.success) setResult(data);
-      else setError(data.error || 'Analysis failed');
+      if (data.success) {
+        setResult(data);
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      } else {
+        setError(data.error || 'Analysis failed');
+      }
     } catch {
-      setError('Cannot reach server. Make sure Node.js and Flask servers are running.');
+      setError('Cannot reach server. Please try again later.');
     } finally { setLoading(false); }
   };
 
-  const SEVERITY_LABEL = { High: '🔴 High', Medium: '🟡 Medium', Low: '🟢 Low' };
+  const getSeverityStyle = (s) => ({
+    High: { color: '#EF4444', bg: '#FEF2F2', border: '#FCA5A5' },
+    Medium: { color: '#F59E0B', bg: '#FFFBEB', border: '#FCD34D' },
+    Low: { color: '#10B981', bg: '#ECFDF5', border: '#A7F3D0' }
+  }[s] || { color: 'var(--primary)', bg: 'var(--primary-light)', border: 'var(--border)' });
 
   return (
-    <div className="page">
-      <h1 className="section-title">🔬 {t('diseaseDetector')}</h1>
-      <p className="section-subtitle">Upload a leaf photo or take a picture to identify diseases and get treatment advice.</p>
+    <div className="result-panel">
+      <header style={{ marginBottom: '2.5rem' }}>
+        <h1 className="section-title">🔬 {t('diseaseDetector')}</h1>
+        <p className="section-subtitle">Identify plant health issues instantly using our computer vision models.</p>
+      </header>
 
-      {/* Camera */}
-      {camActive && (
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-          <video ref={videoRef} style={{ width: '100%', display: 'block', borderRadius: 'var(--radius-lg)' }} playsInline />
-          <div style={{ display: 'flex', gap: 10, padding: 12 }}>
-            <button className="btn btn-primary" onClick={capturePhoto} style={{ flex: 1 }}>📷 Capture</button>
-            <button className="btn btn-outline" onClick={() => { videoRef.current?.srcObject?.getTracks().forEach(t => t.stop()); setCamActive(false); }} style={{ flex: 1 }}>Cancel</button>
+      {/* Main Upload / Camera View */}
+      <div className="grid-cols-2" style={{ marginBottom: '2rem' }}>
+        <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="card-title">
+            <span className="card-icon">📸</span> Capture & Analyze
           </div>
-        </div>
-      )}
-
-      {!camActive && (
-        <>
-          {/* Upload Zone */}
-          {!preview ? (
-            <div className={`upload-zone${isDragActive ? ' drag-active' : ''}`} {...getRootProps()}>
-              <input {...getInputProps()} id="leaf-upload" />
-              <div className="upload-zone-icon">🍃</div>
-              <div className="upload-zone-text">{t('dragDrop')}</div>
-              <div className="upload-zone-sub">Supports JPG, PNG, WebP up to 10MB</div>
-              <button type="button" className="btn btn-outline" style={{ marginTop: 16, width: 'auto', padding: '10px 24px' }}>Browse Files</button>
-            </div>
-          ) : (
-            <div style={{ marginBottom: 12 }}>
-              <img src={preview} alt="Leaf preview" className="preview-img" />
-              <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => { setPreview(null); setImageFile(null); setResult(null); }}>Remove</button>
+          
+          {camActive ? (
+            <div style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: '#000' }}>
+              <video ref={videoRef} style={{ width: '100%', display: 'block' }} playsInline />
+              <div style={{ position: 'absolute', bottom: '1rem', left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+                <button className="btn btn-primary" onClick={capturePhoto} style={{ width: 'auto' }}>Capture Photo</button>
+                <button className="btn btn-outline" onClick={() => { videoRef.current?.srcObject?.getTracks().forEach(t => t.stop()); setCamActive(false); }} style={{ width: 'auto', background: 'white' }}>Cancel</button>
               </div>
-            </div>
-          )}
-
-          <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-            <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={openCamera}>📷 Camera</button>
-            <label htmlFor="leaf-upload-btn" className="btn btn-outline" style={{ flex: 1, display: 'flex', alignItems:'center', justifyContent:'center', cursor:'pointer' }}>
-              📁 Gallery
-              <input id="leaf-upload-btn" type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => processFile(e.target.files[0])} />
-            </label>
-          </div>
-
-          {imageFile && (
-            <button className="btn btn-primary" onClick={analyze} disabled={loading}>
-              {loading ? <><span className="spinner" style={{ width: 18, height: 18, borderWidth: 3 }} /> {t('loading')}</> : `🔬 ${t('analyzeDisease')}`}
-            </button>
-          )}
-        </>
-      )}
-
-      {error && <div className="alert-banner medium" style={{ marginTop: 12 }}><span>⚠️</span> {error}</div>}
-
-      {result && (
-        <>
-          {result.isHealthy && !result.disease ? (
-            <div className="healthy-banner" style={{ marginTop: 16 }}>
-              <div className="healthy-icon">🌿</div>
-              <div className="healthy-title">{t('healthy')}</div>
-              <div className="healthy-text">{t('healthyMsg')}</div>
             </div>
           ) : (
             <>
-              <div className="disease-result" style={{ marginTop: 16 }}>
-                <div className={`disease-header severity-${result.disease?.severity || 'Medium'}`}>
-                  <div style={{ fontSize: 40 }}>{result.disease?.icon || '🍃'}</div>
-                  <div className="disease-name">{result.disease?.name}</div>
-                  <div className="disease-crops">Affects: {result.disease?.crops?.join(', ')}</div>
-                  <div style={{ fontSize: 13, marginTop: 6, opacity: 0.85 }}>
-                    Severity: {SEVERITY_LABEL[result.disease?.severity]} · Confidence: {result.disease?.confidence}%
-                  </div>
+              {preview ? (
+                <div style={{ position: 'relative' }}>
+                  <img src={preview} alt="Leaf preview" className="preview-img" style={{ height: '300px' }} />
+                  <button 
+                    className="btn btn-outline" 
+                    style={{ position: 'absolute', top: '1rem', right: '1rem', width: 'auto', background: 'white', padding: '0.5rem' }}
+                    onClick={() => { setPreview(null); setImageFile(null); setResult(null); }}
+                  >
+                    ✕ Remove
+                  </button>
+                  {loading && (
+                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', flexDirection: 'column', gap: '1rem' }}>
+                      <div className="spinner" style={{ width: 40, height: 40, borderWidth: 4 }} />
+                      <p style={{ fontWeight: 700 }}>AI Scanning Leaf Architecture...</p>
+                    </div>
+                  )}
                 </div>
-                <div className="disease-body">
-                  <div className="disease-section">
-                    <div className="disease-section-label">🔍 Symptoms</div>
-                    <div className="disease-section-text">{result.disease?.symptoms}</div>
+              ) : (
+                <div className={`upload-zone${isDragActive ? ' drag-active' : ''}`} {...getRootProps()} style={{ padding: '4rem 2rem' }}>
+                  <input {...getInputProps()} />
+                  <div className="upload-zone-icon" style={{ fontSize: '4rem' }}>🍃</div>
+                  <h3 style={{ marginBottom: '0.5rem' }}>Drop leaf photo here</h3>
+                  <p className="upload-zone-sub">or click to browse from gallery</p>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                <button className="btn btn-outline" onClick={openCamera} style={{ flex: 1 }}>📷 Camera</button>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={analyze} 
+                  disabled={!imageFile || loading}
+                  style={{ flex: 1.5 }}
+                >
+                  {loading ? 'Analyzing...' : 'Diagnose Disease'}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Info / FAQ Card */}
+        <div className="card">
+          <div className="card-title">
+            <span className="card-icon">💡</span> How it works
+          </div>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.8 }}>
+            Our deep learning models are trained on over 50,000 images of infected crops. 
+            For best results:
+          </p>
+          <ul style={{ paddingLeft: '1.5rem', marginTop: '1rem', fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <li>Ensure the leaf is well-lit and in focus.</li>
+            <li>Place the leaf against a neutral background.</li>
+            <li>Focus on the infected part of the plant.</li>
+          </ul>
+        </div>
+      </div>
+
+      {error && <div className="card" style={{ borderLeft: '4px solid var(--error)', background: '#FEF2F2', color: 'var(--error)', marginBottom: '2rem', padding: '1rem' }}>⚠️ {error}</div>}
+
+      {/* Results Display */}
+      {result && (
+        <div className="result-panel">
+          {result.isHealthy ? (
+            <div className="card" style={{ textAlign: 'center', padding: '3rem', borderLeft: '8px solid var(--success)' }}>
+              <div style={{ fontSize: '4rem' }}>🌿</div>
+              <h2 style={{ fontSize: '2rem', margin: '1rem 0', color: 'var(--success)' }}>Target looks healthy!</h2>
+              <p style={{ color: 'var(--text-secondary)' }}>No symptoms of common diseases detected. Keep up the good work!</p>
+            </div>
+          ) : (
+            <div className="grid-cols-2">
+              <div className="card" style={{ borderLeft: `6px solid ${getSeverityStyle(result.disease.severity).color}` }}>
+                <header style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '3rem' }}>{result.disease.icon}</span>
+                  <div>
+                    <h2 style={{ fontSize: '1.75rem' }}>{result.disease.name}</h2>
+                    <span style={{ 
+                      fontSize: '0.75rem', 
+                      fontWeight: 800, 
+                      padding: '0.25rem 0.75rem', 
+                      borderRadius: '20px',
+                      background: getSeverityStyle(result.disease.severity).bg,
+                      color: getSeverityStyle(result.disease.severity).color,
+                      border: `1px solid ${getSeverityStyle(result.disease.severity).border}`
+                    }}>
+                      {result.disease.severity.toUpperCase()} SEVERITY
+                    </span>
                   </div>
-                  <div className="disease-section">
-                    <div className="disease-section-label">💊 Treatment</div>
-                    <div className="disease-section-text">{result.disease?.treatment}</div>
+                </header>
+
+                <div className="disease-section">
+                  <div className="disease-section-label">AI Confidence</div>
+                  <div className="progress-bar-track" style={{ marginBottom: '1.5rem' }}>
+                    <div className="progress-bar-fill" style={{ width: `${result.disease.confidence}%` }} />
                   </div>
+                  <div className="disease-section-label">Primary Symptoms</div>
+                  <p className="disease-section-text">{result.disease.symptoms}</p>
                 </div>
               </div>
 
-              {result.alternatives?.length > 0 && (
-                <div className="card">
-                  <div className="card-title"><span className="card-icon">🔍</span> {t('alternate')}</div>
-                  {result.alternatives.map((alt) => (
-                    <div key={alt.name} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)', fontSize: 14 }}>
-                      <span>{alt.name}</span>
-                      <span style={{ color: 'var(--text-secondary)' }}>{alt.confidence}%</span>
-                    </div>
-                  ))}
+              <div className="card" style={{ background: 'var(--primary-light)', borderColor: 'var(--primary)' }}>
+                <div className="card-title" style={{ color: 'var(--primary)' }}>
+                  <span className="card-icon" style={{ background: 'white' }}>💊</span> Treatment Plan
                 </div>
-              )}
-            </>
+                <p style={{ fontSize: '1rem', lineHeight: 1.8, color: 'var(--text-main)' }}>{result.disease.treatment}</p>
+                
+                <div style={{ marginTop: '2rem' }}>
+                  <div className="disease-section-label">Affected Crops</div>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+                    {result.disease.crops?.map(c => <span key={c} className="tag" style={{ background: 'white', border: '1px solid var(--border)', color: 'var(--text-main)' }}>{c}</span>)}
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );
