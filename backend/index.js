@@ -10,7 +10,8 @@ const multer = require('multer');
 const FormData = require('form-data');
 
 const app = express();
-// Trigger redeploy 2026-03-15
+// Trigger redeploy 2026-03-15 (v2)
+console.log('Using FLASK_URL:', FLASK_URL);
 const PORT = process.env.PORT || 5000;
 let FLASK_URL = process.env.FLASK_URL || 'http://localhost:5001';
 
@@ -61,7 +62,7 @@ app.post('/api/crop', async (req, res) => {
       ? `ML Server: ${flaskError}`
       : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
         ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-        : `Cannot reach Flask server. Did you set the FLASK_URL env var on Render?`;
+        : `Backend Error: Cannot reach Flask server at ${FLASK_URL}. Details: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
 });
@@ -82,7 +83,7 @@ app.post('/api/fertilizer', async (req, res) => {
       ? `ML Server: ${flaskError}`
       : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
         ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-        : `Cannot reach Flask server. Did you set the FLASK_URL env var on Render?`;
+        : `Backend Error: Cannot reach Flask server at ${FLASK_URL}. Details: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
 });
@@ -120,7 +121,7 @@ app.post('/api/disease', upload.single('image'), async (req, res) => {
       ? `ML Server: ${flaskError}`
       : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
         ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-        : `Cannot reach Flask server. Did you set the FLASK_URL env var on Render?`;
+        : `Backend Error: Cannot reach Flask server at ${FLASK_URL}. Details: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
 });
@@ -141,7 +142,7 @@ app.post('/api/price', async (req, res) => {
       ? `ML Server: ${flaskError}`
       : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
         ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-        : `Cannot reach Flask server at ${FLASK_URL}. Error: ${err.message}`;
+        : `Backend Error: Cannot reach Flask server at ${FLASK_URL}. Details: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
 });

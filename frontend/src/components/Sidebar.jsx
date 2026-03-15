@@ -19,8 +19,10 @@ export default function Sidebar({ isOpen, onClose }) {
   useEffect(() => {
     const fetchSysInfo = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${apiUrl}/api/system-info`);
+        let apiUrl = import.meta.env.VITE_API_URL || '';
+        // If VITE_API_URL already ends with /api, don't add it again
+        const systemUrl = apiUrl.endsWith('/api') ? `${apiUrl}/system-info` : `${apiUrl}/api/system-info`;
+        const res = await fetch(systemUrl);
         if (res.ok) {
           const data = await res.json();
           setSysInfo(data);
