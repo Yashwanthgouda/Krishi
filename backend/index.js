@@ -36,6 +36,15 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'Krishi API Backend', timestamp: new Date().toISOString() });
 });
 
+app.get('/api/system-info', (req, res) => {
+  res.json({ 
+    flaskUrl: FLASK_URL,
+    usingDefaultFlask: FLASK_URL === 'http://localhost:5001',
+    port: PORT,
+    nodeVersion: process.version
+  });
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Crop Recommendation
 // ─────────────────────────────────────────────────────────────────────────────

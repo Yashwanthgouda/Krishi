@@ -14,6 +14,23 @@ export const NAV_ITEMS = [
 
 export default function Sidebar({ isOpen, onClose }) {
   const { t } = useLang();
+  const [sysInfo, setSysInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchSysInfo = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/system-info`);
+        if (res.ok) {
+          const data = await res.json();
+          setSysInfo(data);
+        }
+      } catch (e) {
+        console.error('Failed to fetch system info');
+      }
+    };
+    fetchSysInfo();
+  }, []);
 
   return (
     <>
@@ -54,15 +71,28 @@ export default function Sidebar({ isOpen, onClose }) {
 
           <div style={{ padding: '0.5rem', background: '#f8fafc', borderRadius: 'var(--radius-md)', border: '1px dashed var(--border)' }}>
             <p style={{ fontSize: '0.6rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>{t('systemStatus')}</p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} />
-              <p style={{ fontSize: '0.6rem', fontWeight: 600, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {t('backendLabel')}: {import.meta.env.VITE_API_URL || 'Local (Proxy)'}
-              </p>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} />
+                <p style={{ fontSize: '0.55rem', fontWeight: 600, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  Backend: {import.meta.env.VITE_API_URL ? 'Connected' : 'Local'}
+                </p>
+              </div>
+
+              {sysInfo && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: sysInfo.usingDefaultFlask ? '#f59e0b' : '#10b981' }} />
+                  <p style={{ fontSize: '0.55rem', fontWeight: 600, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    ML Server: {sysInfo.flaskUrl}
+                  </p>
+                </div>
+              )}
             </div>
-            {import.meta.env.VITE_API_URL && (
-              <p style={{ fontSize: '0.5rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                {t('backendMatch')}
+
+            {sysInfo?.usingDefaultFlask && (
+              <p style={{ fontSize: '0.5rem', color: 'var(--error)', marginTop: '0.4rem', fontWeight: 700 }}>
+                ⚠️ FLASK_URL is using localhost! Check Render Env Vars.
               </p>
             )}
           </div>
