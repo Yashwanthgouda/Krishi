@@ -1,3 +1,6 @@
+import React from 'react';
+import { useLang } from '../context/LanguageContext';
+
 export default function Dashboard() {
   const { t } = useLang();
 

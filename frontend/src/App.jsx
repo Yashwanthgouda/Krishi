@@ -4,7 +4,7 @@ import { LanguageProvider } from './context/LanguageContext';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import MobileNav from './components/MobileNav';
-import VoiceButton from './components/VoiceButton';
+// import VoiceButton from './components/VoiceButton';
 import Dashboard from './pages/Dashboard';
 import CropAdvisor from './pages/CropAdvisor';
 import FertilizerGuide from './pages/FertilizerGuide';
