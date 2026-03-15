@@ -11,7 +11,13 @@ const FormData = require('form-data');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const FLASK_URL = process.env.FLASK_URL || 'http://localhost:5001';
+let FLASK_URL = process.env.FLASK_URL || 'http://localhost:5001';
+
+// Remove trailing slash if present to avoid double slashes in routes
+if (FLASK_URL.endsWith('/')) {
+  FLASK_URL = FLASK_URL.slice(0, -1);
+}
+
 const OWM_KEY = process.env.OPENWEATHERMAP_API_KEY || '';
 
 // Middleware
@@ -125,7 +131,7 @@ app.post('/api/price', async (req, res) => {
       ? `ML Server: ${flaskError}`
       : (err.code === 'ECONNABORTED' || err.message.includes('timeout'))
         ? 'Flask ML server took too long to wake up. Please try again in 1 minute.'
-        : `Cannot reach Flask server. Did you set the FLASK_URL env var on Render?`;
+        : `Cannot reach Flask server at ${FLASK_URL}. Error: ${err.message}`;
     res.status(500).json({ success: false, error: msg });
   }
 });
