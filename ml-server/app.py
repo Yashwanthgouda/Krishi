@@ -15,6 +15,7 @@ import joblib
 
 app = Flask(__name__)
 CORS(app)
+# Redeploy trigger v7 - 2026-03-22: HF model + detailed treatment plans
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Crop Recommendation Data & Model
