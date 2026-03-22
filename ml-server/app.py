@@ -344,15 +344,36 @@ def analyze_image_disease(image_bytes):
                 if (b_mean.mean() < 60 and b_std > 5):
                     symptom_features['dark_lesions'] += 1
 
-        # Plant Guard 2.0: Check for texture and color consistency
+        # Plant Guard 3.0: Hard green requirement + reject soil/skin
         avg_variance = total_variance / (grid_size * grid_size)
         green_ratio = green_blocks / (grid_size * grid_size)
-        
-        # Most non-plant objects (like phones) have very low texture variance or purely solid colors
-        if (green_ratio < 0.1 and symptom_features['yellowing'] < 2 and symptom_features['brown_spots'] < 2) or (avg_variance < 5):
+
+        # Global pixel-level green dominance check (more precise)
+        # A leaf pixel: green channel is significantly higher than red AND blue
+        global_green_mask = (arr[:, :, 1] > arr[:, :, 0] + 10) & (arr[:, :, 1] > arr[:, :, 2] + 10) & (arr[:, :, 1] > 50)
+        global_green_ratio = global_green_mask.mean()
+
+        # Skin/soil detection: high red-to-green ratio with low blue
+        skin_soil_mask = (arr[:, :, 0] > 100) & (arr[:, :, 0] > arr[:, :, 1] - 20) & (arr[:, :, 2] < 120)
+        skin_soil_ratio = skin_soil_mask.mean()
+
+        # RULE: A valid plant MUST have at least 8% green pixels
+        # OR has significant yellowing (diseased leaf) but NOT primarily skin/soil colored
+        has_enough_green = global_green_ratio > 0.08
+        has_yellowing = symptom_features['yellowing'] >= 3
+        is_primarily_soil_or_skin = skin_soil_ratio > 0.65 and global_green_ratio < 0.06
+
+        if not has_enough_green and not has_yellowing:
             return {
                 'detected': False,
-                'error': 'The image does not appear to be a plant. Please provide a clear, high-resolution photo of a leaf.',
+                'error': 'No plant leaf detected in the image. Please upload a photo of a plant leaf (even diseased leaves have green areas).',
+                'isHealthy': False
+            }
+        
+        if is_primarily_soil_or_skin:
+            return {
+                'detected': False,
+                'error': 'This image appears to show soil, hands, or a non-plant object. Please upload a clear photo of a plant leaf.',
                 'isHealthy': False
             }
 
