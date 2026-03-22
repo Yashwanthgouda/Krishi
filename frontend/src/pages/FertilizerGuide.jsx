@@ -19,6 +19,7 @@ export default function FertilizerGuide() {
   const [form, setForm] = useState({ crop: 'rice', N: 40, P: 20, K: 20, area: 1 });
   const [result, setResult] = useState(null);
   const { execute, loading, error, isWakingUp, countdown } = useEnhancedApi(getFertilizerAdvice);
+  const update = (key, val) => setForm((prev) => ({ ...prev, [key]: val }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
