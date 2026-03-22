@@ -7,3 +7,4 @@ Pillow
 statsmodels
 joblib
 gunicorn
+requests
