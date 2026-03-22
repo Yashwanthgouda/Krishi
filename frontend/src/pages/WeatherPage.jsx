@@ -36,7 +36,27 @@ export default function WeatherPage() {
     } finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchWeather('Bangalore'); }, []);
+  const fetchByCoords = async (lat, lon) => {
+    setLoading(true); setError('');
+    try {
+      const d = await getWeatherByCoords(lat, lon);
+      setData(d);
+      if (d.success && d.city) setInput(d.city);
+    } catch {
+      fetchWeather('Bangalore');
+    } finally { setLoading(false); }
+  };
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => fetchByCoords(pos.coords.latitude, pos.coords.longitude),
+        () => fetchWeather('Bangalore')
+      );
+    } else {
+      fetchWeather('Bangalore');
+    }
+  }, []);
 
   const handleSubmit = (e) => { e.preventDefault(); fetchWeather(input); };
 
