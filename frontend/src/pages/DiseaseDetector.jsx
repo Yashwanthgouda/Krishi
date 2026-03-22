@@ -229,7 +229,14 @@ export default function DiseaseDetector() {
                 <div className="card-title" style={{ color: 'var(--primary)' }}>
                   <span className="card-icon" style={{ background: 'white' }}>💊</span> {t('treatmentPlan')}
                 </div>
-                <p style={{ fontSize: '1rem', lineHeight: 1.8, color: 'var(--text-main)' }}>{result.disease.treatment}</p>
+                <pre style={{ 
+                  fontSize: '0.875rem', 
+                  lineHeight: 1.8, 
+                  color: 'var(--text-main)', 
+                  whiteSpace: 'pre-wrap', 
+                  fontFamily: 'inherit',
+                  margin: 0
+                }}>{result.disease.treatment}</pre>
                 
                 <div style={{ marginTop: '2rem' }}>
                   <div className="disease-section-label">{t('affectedCrops')}</div>

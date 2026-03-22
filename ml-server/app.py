@@ -211,80 +211,269 @@ DISEASES = [
     {
         'name': 'Late Blight',
         'crops': ['Tomato', 'Potato'],
-        'symptoms': 'Dark brown water-soaked lesions on leaves, white mold on underside',
-        'treatment': 'Apply Mancozeb 75 WP @ 2g/L or Metalaxyl. Remove infected parts. Avoid overhead irrigation.',
+        'symptoms': 'Dark brown water-soaked lesions on leaves and stems. White fuzzy mold on leaf underside in humid conditions. Infected fruits show brown, greasy patches.',
+        'treatment': (
+            '🔴 IMMEDIATE ACTION REQUIRED (High Severity)\n\n'
+            '1. CHEMICAL CONTROL:\n'
+            '   • Mancozeb 75 WP @ 2–2.5 g/L water — spray every 7 days\n'
+            '   • OR Metalaxyl-M + Mancozeb (Ridomil Gold) @ 2.5 g/L — most effective\n'
+            '   • OR Cymoxanil 8% + Mancozeb 64% @ 3 g/L water\n'
+            '   • Spray early morning or evening; avoid spraying before rain\n\n'
+            '2. ORGANIC ALTERNATIVES:\n'
+            '   • Copper Oxychloride 50 WP @ 3 g/L (every 10 days)\n'
+            '   • Bordeaux Mixture 1% (100g CuSO4 + 100g lime per 10L water)\n\n'
+            '3. CULTURAL PRACTICES:\n'
+            '   • Remove and destroy all infected plant parts immediately\n'
+            '   • Avoid overhead irrigation — use drip irrigation only\n'
+            '   • Ensure good air circulation by proper plant spacing\n'
+            '   • Do NOT compost infected material\n\n'
+            '4. PREVENTION:\n'
+            '   • Use certified disease-free seeds and resistant varieties\n'
+            '   • Apply protective fungicide before rainy/cloudy weather\n'
+            '   • Rotate crops — avoid potato/tomato in same field for 2–3 years'
+        ),
         'severity': 'High',
         'icon': '🍅',
     },
     {
         'name': 'Leaf Rust',
-        'crops': ['Wheat', 'Barley'],
-        'symptoms': 'Orange-brown pustules on leaf surface, yellow halo around pustules',
-        'treatment': 'Apply Propiconazole 25 EC @ 0.1% or Tebuconazole. Early morning spraying preferred.',
+        'crops': ['Wheat', 'Barley', 'Maize'],
+        'symptoms': 'Orange-brown powdery pustules (uredinia) on upper leaf surface. Yellow chlorotic halo around pustules. Premature drying of leaves in severe cases.',
+        'treatment': (
+            '🟡 MODERATE — Act Within 1 Week\n\n'
+            '1. CHEMICAL CONTROL:\n'
+            '   • Propiconazole 25 EC @ 0.1% (1 ml/L) — spray at first sign\n'
+            '   • OR Tebuconazole 25.9 EC @ 1 ml/L water\n'
+            '   • OR Hexaconazole 5 EC @ 2 ml/L water\n'
+            '   • Repeat spray after 15–21 days if needed\n\n'
+            '2. ORGANIC ALTERNATIVES:\n'
+            '   • Neem oil 3% + liquid soap @ 3 ml/L water\n'
+            '   • Sulfur dust 20–25 kg/ha (avoid during hot weather >35°C)\n\n'
+            '3. CULTURAL PRACTICES:\n'
+            '   • Remove and burn heavily infected crop debris\n'
+            '   • Spray during early morning when dew is still present\n'
+            '   • Avoid excess nitrogen fertilizer (promotes soft tissue)\n\n'
+            '4. PREVENTION:\n'
+            '   • Use rust-resistant varieties (e.g., HD-2967, GW-322 for wheat)\n'
+            '   • Monitor fields regularly during cool, moist weather\n'
+            '   • Early sowing reduces rust incidence in wheat'
+        ),
         'severity': 'Medium',
         'icon': '🌾',
     },
     {
         'name': 'Powdery Mildew',
-        'crops': ['Grapes', 'Cucumber', 'Wheat'],
-        'symptoms': 'White powdery coating on leaves and stems, leaves curl and dry',
-        'treatment': 'Spray Sulfur 80 WP @ 2g/L or Carbendazim 50 WP @ 1g/L. Improve air circulation.',
+        'crops': ['Grapes', 'Cucumber', 'Wheat', 'Cucurbits', 'Squash', 'Cherry'],
+        'symptoms': 'White or grey powdery fungal growth on upper leaf surface. Leaves curl, turn yellow, and dry out. Stunted shoot growth and fruit deformation.',
+        'treatment': (
+            '🟡 MODERATE — Treat Within 5–7 Days\n\n'
+            '1. CHEMICAL CONTROL:\n'
+            '   • Sulphur 80 WP @ 2–3 g/L water — most effective and affordable\n'
+            '   • OR Carbendazim 50 WP @ 1 g/L water\n'
+            '   • OR Triadimefon 25 WP @ 1 g/L water\n'
+            '   • OR Myclobutanil 10 WP @ 1 g/L (for grapes)\n'
+            '   • Spray every 10–14 days; rotate fungicides to prevent resistance\n\n'
+            '2. ORGANIC ALTERNATIVES:\n'
+            '   • Baking soda (Sodium bicarbonate) @ 5 g/L + few drops dish soap\n'
+            '   • Neem oil 5 ml/L + 2 ml liquid soap/L water\n'
+            '   • Diluted milk spray (40% milk, 60% water)\n\n'
+            '3. CULTURAL PRACTICES:\n'
+            '   • Prune dense canopy to improve air circulation\n'
+            '   • Avoid overhead irrigation — keep foliage dry\n'
+            '   • Remove and destroy infected leaves\n\n'
+            '4. PREVENTION:\n'
+            '   • Plant resistant varieties where available\n'
+            '   • Avoid excess nitrogen which promotes rapid soft growth\n'
+            '   • Apply preventive sulphur spray before onset of humid weather'
+        ),
         'severity': 'Medium',
         'icon': '🍇',
     },
     {
         'name': 'Bacterial Leaf Blight',
-        'crops': ['Rice'],
-        'symptoms': 'Water-soaked pale green lesions on leaf margins turning yellow to white',
-        'treatment': 'Apply Copper Oxychloride 50 WP @ 3g/L. Use resistant varieties. Avoid flood irrigation.',
+        'crops': ['Rice', 'Tomato', 'Pepper', 'Peach'],
+        'symptoms': 'Water-soaked, pale green to yellow lesions starting at leaf margins. Lesions turn white to grey as they dry. Bacterial ooze visible in humid conditions.',
+        'treatment': (
+            '🔴 HIGH SEVERITY — Act Immediately\n\n'
+            '1. CHEMICAL CONTROL:\n'
+            '   • Copper Oxychloride 50 WP @ 3 g/L — spray preventively\n'
+            '   • OR Streptomycin Sulfate + Tetracycline (Blitox/Plantomycin) @ 0.5 g/L\n'
+            '   • OR Kasugamycin 3 SL @ 2 ml/L water (for rice)\n'
+            '   • Spray at 10-day intervals during rainy/humid periods\n\n'
+            '2. ORGANIC ALTERNATIVES:\n'
+            '   • Bordeaux Mixture 1% (preventive spray)\n'
+            '   • Trichoderma viride 2 g/L soil drenching\n\n'
+            '3. CULTURAL PRACTICES:\n'
+            '   • Remove and destroy all infected plant material\n'
+            '   • Drain excess water from fields (for rice)\n'
+            '   • Avoid flood irrigation — use controlled irrigation\n'
+            '   • Do NOT apply high doses of nitrogen when disease is active\n\n'
+            '4. PREVENTION:\n'
+            '   • Use certified disease-free seeds treated with Pseudomonas fluorescens\n'
+            '   • Plant resistant varieties (e.g., IR64, Pusa Basmati 1 for rice)\n'
+            '   • Balanced potassium fertilization improves resistance'
+        ),
         'severity': 'High',
         'icon': '🌾',
     },
     {
         'name': 'Anthracnose',
-        'crops': ['Mango', 'Beans', 'Chilli'],
-        'symptoms': 'Dark sunken lesions on fruits and leaves, pink spore masses in humid conditions',
-        'treatment': 'Apply Carbendazim 50 WP @ 1g/L at fruiting stage. Prune infected branches.',
+        'crops': ['Mango', 'Beans', 'Chilli', 'Grape', 'Tomato'],
+        'symptoms': 'Dark, sunken, circular lesions on leaves, stems, and fruits. Salmon-pink to orange spore masses appear in humid weather. Fruits rot from the lesion outward.',
+        'treatment': (
+            '🟡 MODERATE — Act Within 3–5 Days\n\n'
+            '1. CHEMICAL CONTROL:\n'
+            '   • Carbendazim 50 WP @ 1 g/L water — very effective\n'
+            '   • OR Mancozeb 75 WP @ 2 g/L + Carbendazim 50 WP @ 1 g/L (tank mix)\n'
+            '   • OR Azoxystrobin 23 SC @ 1 ml/L water\n'
+            '   • Spray at flowering and fruit set stages; repeat every 15 days\n\n'
+            '2. POST-HARVEST (for mango):\n'
+            '   • Hot water treatment: dip fruits in water at 52°C for 5 minutes\n'
+            '   • OR apply Thiabendazole wax coating before storage\n\n'
+            '3. CULTURAL PRACTICES:\n'
+            '   • Prune and destroy infected twigs and leaves\n'
+            '   • Collect and bury/burn fallen fruits and leaves\n'
+            '   • Ensure good drainage; avoid waterlogging\n\n'
+            '4. PREVENTION:\n'
+            '   • Apply protective spray before monsoon/rainy season\n'
+            '   • Use certified disease-free planting material\n'
+            '   • Copper-based spray before flowering as protective measure'
+        ),
         'severity': 'Medium',
         'icon': '🥭',
     },
     {
         'name': 'Fusarium Wilt',
-        'crops': ['Banana', 'Cotton', 'Tomato'],
-        'symptoms': 'Yellowing of lower leaves, vascular browning, wilting of whole plant',
-        'treatment': 'Drench soil with Carbendazim. Use Trichoderma viride as bio-control. Remove infected plants.',
+        'crops': ['Banana', 'Cotton', 'Tomato', 'Chickpea', 'Lentil'],
+        'symptoms': 'Progressive yellowing starting from lower/outer leaves. Wilting occurs even when soil is moist. Brown-red discoloration visible in stem vascular tissue when cut.',
+        'treatment': (
+            '🔴 HIGH SEVERITY — Difficult to Cure; Focus on Prevention\n\n'
+            '1. CHEMICAL CONTROL (Soil Treatment):\n'
+            '   • Carbendazim 50 WP @ 2 g/L soil drench around root zone\n'
+            '   • OR Thiophanate Methyl 70 WP @ 2 g/L as soil drench\n'
+            '   • Apply 2–3 times at 15-day intervals\n\n'
+            '2. BIOLOGICAL CONTROL (Most Effective Long-term):\n'
+            '   • Trichoderma viride @ 5 g/kg soil (mix in FYM and apply)\n'
+            '   • Pseudomonas fluorescens @ 10 g/kg seed (seed treatment)\n'
+            '   • Add Trichoderma-enriched compost to the planting hole\n\n'
+            '3. CULTURAL PRACTICES:\n'
+            '   • Remove and destroy infected plants with roots immediately\n'
+            '   • Solarize soil: cover with transparent plastic for 4–6 weeks in summer\n'
+            '   • Adjust soil pH to 6.5–7.0 by liming (Fusarium prefers acidic soil)\n'
+            '   • Avoid waterlogging and improve drainage\n\n'
+            '4. PREVENTION (Critical):\n'
+            '   • Use Fusarium-resistant varieties whenever possible\n'
+            '   • Long crop rotation (3–4 years) with non-host crops\n'
+            '   • Treat seeds with Thiram + Carbendazim before sowing'
+        ),
         'severity': 'High',
         'icon': '🍌',
     },
     {
         'name': 'Downy Mildew',
-        'crops': ['Grapes', 'Cucumber', 'Onion'],
-        'symptoms': 'Yellow patches on upper leaf surface, purplish mold on underside',
-        'treatment': 'Apply Metalaxyl + Mancozeb @ 2.5g/L. Spray in cool, early morning hours.',
+        'crops': ['Grapes', 'Cucumber', 'Onion', 'Tomato', 'Lettuce'],
+        'symptoms': 'Pale yellow angular patches on upper leaf surface. Purple-grey downy fungal growth on underside. Severe defoliation in cool, wet conditions.',
+        'treatment': (
+            '🟡 MODERATE — Act Within 5–7 Days\n\n'
+            '1. CHEMICAL CONTROL:\n'
+            '   • Metalaxyl 8% + Mancozeb 64% WP (Ridomil) @ 2.5 g/L water\n'
+            '   • OR Fosetyl-Al 80 WP (Aliette) @ 2.5 g/L water\n'
+            '   • OR Dimethomorph 50 WP @ 1 g/L water\n'
+            '   • Spray at 7–10 day intervals; apply before expected rain\n\n'
+            '2. ORGANIC ALTERNATIVES:\n'
+            '   • Bordeaux Mixture 1% (very effective preventive)\n'
+            '   • Copper Hydroxide @ 2.5 g/L water\n\n'
+            '3. CULTURAL PRACTICES:\n'
+            '   • Avoid overhead irrigation — use drip irrigation\n'
+            '   • Remove and destroy infected leaves\n'
+            '   • Ensure adequate spacing for air circulation\n'
+            '   • Spray in the morning so foliage dries quickly\n\n'
+            '4. PREVENTION:\n'
+            '   • Use tolerant/resistant varieties\n'
+            '   • Begin protective sprays at the start of monsoon season\n'
+            '   • Avoid working in the field when foliage is wet'
+        ),
         'severity': 'Medium',
         'icon': '🧅',
     },
     {
         'name': 'Brown Spot',
-        'crops': ['Rice'],
-        'symptoms': 'Oval brown spots with yellow halo on leaves, seedling blight',
-        'treatment': 'Seed treatment with Thiram. Foliar spray with Mancozeb 75 WP @ 2g/L.',
+        'crops': ['Rice', 'Strawberry', 'Corn', 'Potato'],
+        'symptoms': 'Oval to circular brown spots with yellow halo on leaves. Spots may show grey-white center. Infected seeds show brown/black discoloration (seedling blight).',
+        'treatment': (
+            '🟢 LOW-MEDIUM SEVERITY — Treat Within 1–2 Weeks\n\n'
+            '1. CHEMICAL CONTROL:\n'
+            '   • Mancozeb 75 WP @ 2 g/L water — most effective\n'
+            '   • OR Validamycin 3 SL @ 2 ml/L water (for rice)\n'
+            '   • OR Propiconazole 25 EC @ 1 ml/L water\n'
+            '   • Spray at booting stage; repeat after 15 days\n\n'
+            '2. SEED TREATMENT (Critical for Prevention):\n'
+            '   • Thiram 75 WP @ 3 g/kg seed OR\n'
+            '   • Carbendazim 50 WP @ 2 g/kg seed\n'
+            '   • This alone greatly reduces incidence\n\n'
+            '3. NUTRITION-BASED CONTROL:\n'
+            '   • Apply potassium @ 60 kg K2O/ha (deficiency promotes disease)\n'
+            '   • Foliar spray of 2% MgSO4 (magnesium sulfate)\n'
+            '   • Zinc sulfate @ 20 kg/ha in deficient soils\n\n'
+            '4. CULTURAL PRACTICES:\n'
+            '   • Remove crop debris after harvest\n'
+            '   • Avoid waterlogged conditions\n'
+            '   • Use balanced NPK — avoid excess nitrogen'
+        ),
         'severity': 'Medium',
         'icon': '🌾',
     },
     {
         'name': 'Yellow Mosaic Virus',
-        'crops': ['Moong', 'Soybean', 'Bhindi'],
-        'symptoms': 'Yellow-green mosaic pattern on leaves, stunted growth, malformed pods',
-        'treatment': 'No cure once infected. Control whitefly vector with Imidacloprid. Remove diseased plants.',
+        'crops': ['Moong', 'Soybean', 'Bhindi', 'Tomato', 'Pepper'],
+        'symptoms': 'Alternating yellow-green mosaic pattern on leaves. Leaf puckering, distortion, and curling. Severely stunted plant growth. Malformed and undersized fruits and pods.',
+        'treatment': (
+            '🔴 HIGH SEVERITY — VIRAL DISEASE (No Chemical Cure)\n\n'
+            '⚠️ There is NO chemical that can cure a viral infection. \nFocus on vector control and prevention.\n\n'
+            '1. VECTOR CONTROL (Control Whitefly/Thrips Vectors):\n'
+            '   • Imidacloprid 17.8 SL @ 0.5 ml/L water (systemic insecticide)\n'
+            '   • OR Thiamethoxam 25 WG @ 0.3 g/L water\n'
+            '   • OR Dimethoate 30 EC @ 1.5 ml/L water\n'
+            '   • Spray at 7-day intervals; rotate insecticides to prevent resistance\n\n'
+            '2. PHYSICAL MEASURES:\n'
+            '   • Install yellow sticky traps @ 10–15 traps/acre\n'
+            '   • Use silver or reflective mulch to repel whiteflies\n'
+            '   • Remove and destroy infected plants immediately\n\n'
+            '3. BIOLOGICAL CONTROL:\n'
+            '   • Neem oil 5 ml/L + soap 2 ml/L (repels whiteflies)\n'
+            '   • Encourage natural predators (ladybirds, lacewings)\n\n'
+            '4. PREVENTION (Most Important):\n'
+            '   • Use certified virus-free seeds\n'
+            '   • Plant resistant/tolerant varieties (e.g., Pusa Phalguni for moong)\n'
+            '   • Avoid planting near infected fields\n'
+            '   • Seed treatment with Imidacloprid 70 WS @ 5 g/kg seed'
+        ),
         'severity': 'High',
         'icon': '🫘',
     },
     {
         'name': 'Cercospora Leaf Spot',
-        'crops': ['Sugarcane', 'Groundnut', 'Beet'],
-        'symptoms': 'Small circular brown spots with grey center, may coalesce forming blights',
-        'treatment': 'Spray Propiconazole 25 EC @ 0.1% or Copper Fungicide. Avoid dense planting.',
+        'crops': ['Sugarcane', 'Groundnut', 'Beet', 'Corn', 'Soybean'],
+        'symptoms': 'Small, circular to oval brown spots with lighter grey/tan center (target-board appearance). Dark brown border around spots. Multiple spots coalesce, causing leaf blight.',
+        'treatment': (
+            '🟢 LOW SEVERITY — Treat Within 2 Weeks\n\n'
+            '1. CHEMICAL CONTROL:\n'
+            '   • Propiconazole 25 EC @ 1 ml/L water — most effective\n'
+            '   • OR Carbendazim 50 WP @ 1 g/L water\n'
+            '   • OR Copper Hydroxide 77 WP @ 2 g/L water\n'
+            '   • Spray at 15-day intervals; 2–3 sprays are usually sufficient\n\n'
+            '2. ORGANIC ALTERNATIVES:\n'
+            '   • Bordeaux Mixture 1% (effective and economical)\n'
+            '   • Neem cake @ 250 kg/ha soil incorporation\n\n'
+            '3. CULTURAL PRACTICES:\n'
+            '   • Remove infected lower leaves and bury/burn them\n'
+            '   • Avoid dense planting — maintain proper row spacing\n'
+            '   • Avoid overhead sprinkler irrigation\n\n'
+            '4. PREVENTION:\n'
+            '   • Use certified disease-free seeds\n'
+            '   • Crop rotation with non-host crops (cereals) for 2 seasons\n'
+            '   • Apply balanced NPK fertilizer — avoid excess nitrogen'
+        ),
         'severity': 'Low',
         'icon': '🎋',
     },
