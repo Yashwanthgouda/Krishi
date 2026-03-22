@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getWeather, getWeatherByCoords } from '../services/api';
+import { getWeather, getWeatherByCoords, getDistricts } from '../services/api';
 import { useLang } from '../context/LanguageContext';
 
 const WEATHER_ICONS = {
@@ -22,6 +22,7 @@ function formatDate(dateStr) {
 export default function WeatherPage() {
   const { t } = useLang();
   const [input, setInput] = useState('Bangalore');
+  const [districts, setDistricts] = useState([]);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -48,6 +49,8 @@ export default function WeatherPage() {
   };
 
   useEffect(() => {
+    getDistricts().then((res) => setDistricts(res.districts || [])).catch(() => {});
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => fetchByCoords(pos.coords.latitude, pos.coords.longitude),
@@ -74,7 +77,11 @@ export default function WeatherPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t('searchCity')}
+            list="weather-districts"
           />
+          <datalist id="weather-districts">
+            {districts.map(d => <option key={d} value={d} />)}
+          </datalist>
           <button type="submit" className="btn btn-primary" style={{ width: 'auto' }}>{t('search')}</button>
         </form>
       </header>
