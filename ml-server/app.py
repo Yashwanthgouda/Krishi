@@ -532,25 +532,84 @@ PLANTVILLAGE_MAPPING = {
 }
 
 
-def call_huggingface_model(image_bytes):
-    """Call HuggingFace inference API with the plant disease model."""
+# Ensemble of 2 models for maximum accuracy
+HF_MODEL_1 = "linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification"
+HF_MODEL_2 = "ozair23/mobilenet_v2_1.0_224-finetuned-plantdisease"
+
+HF_API_URL_1 = f"https://api-inference.huggingface.co/models/{HF_MODEL_1}"
+HF_API_URL_2 = f"https://api-inference.huggingface.co/models/{HF_MODEL_2}"
+
+
+def call_hf_model(api_url, image_bytes, timeout=20):
+    """Call a single HuggingFace model. Returns list of {label, score} or None."""
     try:
         hf_token = os.environ.get('HF_API_TOKEN', '')
         headers = {"Authorization": f"Bearer {hf_token}"} if hf_token else {}
-        response = req_lib.post(
-            HF_API_URL,
-            headers=headers,
-            data=image_bytes,
-            timeout=25
-        )
-        if response.status_code == 200:
-            return response.json()
-        elif response.status_code == 503:
-            # Model loading, wait indicated in response
-            return None
+        r = req_lib.post(api_url, headers=headers, data=image_bytes, timeout=timeout)
+        if r.status_code == 200:
+            data = r.json()
+            if isinstance(data, list):
+                return data
         return None
     except Exception:
         return None
+
+
+def ensemble_predict(image_bytes):
+    """
+    Call both models concurrently (via sequential calls with timeout).
+    Merge predictions by summing weighted scores for each disease label.
+    Returns the merged top predictions.
+    """
+    import concurrent.futures
+
+    results_1 = None
+    results_2 = None
+
+    # Call both models in parallel using threads
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        future_1 = executor.submit(call_hf_model, HF_API_URL_1, image_bytes, 22)
+        future_2 = executor.submit(call_hf_model, HF_API_URL_2, image_bytes, 22)
+        try:
+            results_1 = future_1.result(timeout=25)
+        except Exception:
+            results_1 = None
+        try:
+            results_2 = future_2.result(timeout=25)
+        except Exception:
+            results_2 = None
+
+    # If both models returned results, merge them
+    if results_1 and results_2:
+        score_map = {}
+
+        # Model 1 has higher base accuracy — give it 60% weight
+        for item in results_1:
+            label = item.get('label', '')
+            score = item.get('score', 0)
+            score_map[label] = score_map.get(label, 0) + score * 0.6
+
+        # Model 2 — 40% weight
+        for item in results_2:
+            label = item.get('label', '')
+            score = item.get('score', 0)
+            score_map[label] = score_map.get(label, 0) + score * 0.4
+
+        # Normalize and sort
+        total = sum(score_map.values()) or 1.0
+        merged = sorted(
+            [{'label': k, 'score': v / total} for k, v in score_map.items()],
+            key=lambda x: x['score'], reverse=True
+        )
+        return merged, 'ensemble'
+
+    # Only one model succeeded — use it
+    if results_1:
+        return results_1, 'model_1'
+    if results_2:
+        return results_2, 'model_2'
+
+    return None, 'none'
 
 
 def analyze_image_disease(image_bytes):
@@ -564,8 +623,8 @@ def analyze_image_disease(image_bytes):
         img = Image.open(io.BytesIO(image_bytes)).convert('RGB').resize((224, 224))
         arr = np.array(img, dtype=np.float32)
 
-        # ── PRIMARY: Call HuggingFace PlantVillage Model ──────────────────────
-        hf_results = call_huggingface_model(image_bytes)
+        # ── PRIMARY: Ensemble of 2 HuggingFace Models ────────────────────────
+        hf_results, source = ensemble_predict(image_bytes)
         if hf_results and isinstance(hf_results, list) and len(hf_results) > 0:
             top = hf_results[0]
             label = top.get('label', '')
@@ -574,7 +633,8 @@ def analyze_image_disease(image_bytes):
             mapped = PLANTVILLAGE_MAPPING.get(label)
             if mapped:
                 disease_name = mapped['name']
-                confidence = min(99.5, score * 100 + mapped['confidence_boost'])
+                # Ensemble confidence is more trustworthy — smaller boost needed
+                confidence = min(99.5, score * 100 + (mapped['confidence_boost'] * 0.5 if source == 'ensemble' else mapped['confidence_boost']))
 
                 if disease_name == 'Healthy':
                     return {
