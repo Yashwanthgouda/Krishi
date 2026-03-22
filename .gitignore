@@ -5,6 +5,6 @@ dist
 __pycache__
 venv
 
-ml-server/models/*.pkl
+# ml-server/models/*.pkl (Removing from ignore to speed up Render cold starts)
 
 tmp/
