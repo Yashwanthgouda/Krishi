@@ -349,16 +349,13 @@ def analyze_image_disease(image_bytes):
         green_ratio = green_blocks / (grid_size * grid_size)
 
         # Global pixel-level green dominance check (more precise)
-        # A leaf pixel: green channel is significantly higher than red AND blue
         global_green_mask = (arr[:, :, 1] > arr[:, :, 0] + 10) & (arr[:, :, 1] > arr[:, :, 2] + 10) & (arr[:, :, 1] > 50)
         global_green_ratio = global_green_mask.mean()
 
-        # Skin/soil detection: high red-to-green ratio with low blue
+        # Skin/soil detection
         skin_soil_mask = (arr[:, :, 0] > 100) & (arr[:, :, 0] > arr[:, :, 1] - 20) & (arr[:, :, 2] < 120)
         skin_soil_ratio = skin_soil_mask.mean()
 
-        # RULE: A valid plant MUST have at least 8% green pixels
-        # OR has significant yellowing (diseased leaf) but NOT primarily skin/soil colored
         has_enough_green = global_green_ratio > 0.08
         has_yellowing = symptom_features['yellowing'] >= 3
         is_primarily_soil_or_skin = skin_soil_ratio > 0.65 and global_green_ratio < 0.06
@@ -366,7 +363,7 @@ def analyze_image_disease(image_bytes):
         if not has_enough_green and not has_yellowing:
             return {
                 'detected': False,
-                'error': 'No plant leaf detected in the image. Please upload a photo of a plant leaf (even diseased leaves have green areas).',
+                'error': 'No plant leaf detected in the image. Please upload a photo of a plant leaf.',
                 'isHealthy': False
             }
         
@@ -376,6 +373,22 @@ def analyze_image_disease(image_bytes):
                 'error': 'This image appears to show soil, hands, or a non-plant object. Please upload a clear photo of a plant leaf.',
                 'isHealthy': False
             }
+
+        # Plant Guard 4.0: Texture check to reject solid-colored green objects (bottles, walls, t-shirts)
+        # Real leaves have natural texture (veins, shadows) → high variance within green pixels
+        if global_green_ratio > 0.08:
+            green_pixels = arr[global_green_mask]  # Extract just the green pixels
+            if len(green_pixels) > 50:
+                # Variance within the green region across all 3 channels
+                green_internal_variance = green_pixels.std(axis=0).mean()
+                # Solid green objects (bottles, shirts) are very uniform → low variance (< 12)
+                # Leaves have veins, shadows, textures → variance typically > 15
+                if green_internal_variance < 12.0:
+                    return {
+                        'detected': False,
+                        'error': 'The green object does not appear to be a plant leaf. Leaves have natural texture from veins and shadows. Please upload a real leaf photo.',
+                        'isHealthy': False
+                    }
 
         # Scoring Logic based on Symptom Distribution
         scores = {}
