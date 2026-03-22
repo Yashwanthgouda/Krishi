@@ -2,14 +2,27 @@ import React, { useState, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { detectDisease } from '../services/api';
 import { useLang } from '../context/LanguageContext';
+import { useEnhancedApi } from '../hooks/useEnhancedApi';
 
 export default function DiseaseDetector() {
   const { t } = useLang();
   const [preview, setPreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { execute, loading, error, isWakingUp, countdown } = useEnhancedApi(detectDisease);
+
+  const analyze = async () => {
+    if (!imageFile) return;
+    setResult(null);
+    const data = await execute(imageFile);
+    if (data && data.success) {
+      setResult(data);
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 100);
+    }
+  };
+
   const videoRef = useRef(null);
   const [camActive, setCamActive] = useState(false);
 
@@ -18,7 +31,7 @@ export default function DiseaseDetector() {
     setImageFile(file);
     const url = URL.createObjectURL(file);
     setPreview(url);
-    setResult(null); setError('');
+    setResult(null); 
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -38,7 +51,7 @@ export default function DiseaseDetector() {
         }
       }, 100);
     } catch {
-      setError('Camera access denied. Please check site permissions.');
+      // Manual error handling for cam
     }
   };
 
@@ -52,22 +65,6 @@ export default function DiseaseDetector() {
       videoRef.current.srcObject?.getTracks().forEach((t) => t.stop());
       setCamActive(false);
     });
-  };
-
-  const analyze = async () => {
-    if (!imageFile) return;
-    setLoading(true); setError('');
-    try {
-      const data = await detectDisease(imageFile);
-      if (data.success) {
-        setResult(data);
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      } else {
-        setError(data.error || t('analysisFailed'));
-      }
-    } catch {
-      setError(t('serverError'));
-    } finally { setLoading(false); }
   };
 
   const getSeverityStyle = (s) => ({
@@ -157,7 +154,29 @@ export default function DiseaseDetector() {
         </div>
       </div>
 
-      {error && <div className="card" style={{ borderLeft: '4px solid var(--error)', background: '#FEF2F2', color: 'var(--error)', marginBottom: '2rem', padding: '1rem' }}>⚠️ {error}</div>}
+      {(isWakingUp || error) && (
+        <div className="card" style={{ 
+          border: `1px solid ${isWakingUp ? 'var(--primary)' : 'var(--error)'}`, 
+          background: isWakingUp ? 'var(--primary-light)' : '#FEF2F2', 
+          marginBottom: '2rem' 
+        }}>
+          {isWakingUp ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+              <span className="spinner" style={{ width: '28px', height: '28px', position: 'static', margin: 0, borderWidth: '3px' }} />
+              <div>
+                <p style={{ color: 'var(--primary)', fontWeight: 700, margin: 0, fontSize: '1.1rem' }}>
+                  ⏳ ML Server is waking up (Render cold start)...
+                </p>
+                <p style={{ fontSize: '0.9rem', color: 'var(--primary)', opacity: 0.9, margin: '0.25rem 0 0 0' }}>
+                  The server is starting up. Retrying automatically in <b>{countdown}</b> seconds.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p style={{ color: 'var(--error)', fontWeight: 600, margin: 0 }}>⚠️ {error}</p>
+          )}
+        </div>
+      )}
 
       {/* Results Display */}
       {result && (

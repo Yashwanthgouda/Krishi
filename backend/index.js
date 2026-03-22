@@ -37,13 +37,22 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'Krishi API Backend', timestamp: new Date().toISOString() });
 });
 
-app.get('/api/system-info', (req, res) => {
-  res.json({ 
-    flaskUrl: FLASK_URL,
-    usingDefaultFlask: FLASK_URL === 'http://localhost:5001',
-    port: PORT,
-    nodeVersion: process.version
-  });
+app.get('/api/ml-health', async (req, res) => {
+  try {
+    const response = await axios.get(`${FLASK_URL}/health`, { timeout: 10000 });
+    res.json({ 
+      success: true, 
+      status: 'awake', 
+      mlService: response.data 
+    });
+  } catch (err) {
+    const isColdStart = err.code === 'ECONNABORTED' || err.message.includes('timeout') || err.response?.status === 502;
+    res.status(503).json({ 
+      success: false, 
+      status: isColdStart ? 'waking_up' : 'down',
+      error: err.message
+    });
+  }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

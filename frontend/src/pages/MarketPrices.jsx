@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getPriceForecast, getDistricts } from '../services/api';
 import { useLang } from '../context/LanguageContext';
+import { useEnhancedApi } from '../hooks/useEnhancedApi';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
@@ -28,8 +29,7 @@ export default function MarketPrices() {
   const [form, setForm] = useState({ crop: 'rice', district: 'Bangalore', months: 6 });
   const [districts, setDistricts] = useState([]);
   const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { execute, loading, error, isWakingUp, countdown } = useEnhancedApi(getPriceForecast);
 
   useEffect(() => {
     getDistricts().then((d) => setDistricts(d.districts || [])).catch(() => {});
@@ -37,18 +37,14 @@ export default function MarketPrices() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); setError(''); setResult(null);
-    try {
-      const data = await getPriceForecast(form);
-      if (data.success) {
-        setResult(data);
+    setResult(null);
+    const data = await execute(form);
+    if (data && data.success) {
+      setResult(data);
+      setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      } else {
-        setError(data.error || t('fetchForecastFailed'));
-      }
-    } catch {
-      setError(t('serverError'));
-    } finally { setLoading(false); }
+      }, 100);
+    }
   };
 
   const chartData = result?.forecastLabels?.map((label, i) => ({
@@ -93,7 +89,29 @@ export default function MarketPrices() {
         </div>
       </form>
 
-      {error && <div className="card" style={{ borderLeft: '4px solid var(--error)', background: '#FEF2F2', color: 'var(--error)', marginBottom: '2rem', padding: '1rem' }}>⚠️ {error}</div>}
+      {(isWakingUp || error) && (
+        <div className="card" style={{ 
+          border: `1px solid ${isWakingUp ? 'var(--primary)' : 'var(--error)'}`, 
+          background: isWakingUp ? 'var(--primary-light)' : '#FEF2F2', 
+          marginBottom: '2rem' 
+        }}>
+          {isWakingUp ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+              <span className="spinner" style={{ width: '28px', height: '28px', position: 'static', margin: 0, borderWidth: '3px' }} />
+              <div>
+                <p style={{ color: 'var(--primary)', fontWeight: 700, margin: 0, fontSize: '1.1rem' }}>
+                  ⏳ ML Server is waking up (Render cold start)...
+                </p>
+                <p style={{ fontSize: '0.9rem', color: 'var(--primary)', opacity: 0.9, margin: '0.25rem 0 0 0' }}>
+                  The server is starting up. Retrying automatically in <b>{countdown}</b> seconds.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p style={{ color: 'var(--error)', fontWeight: 600, margin: 0 }}>⚠️ {error}</p>
+          )}
+        </div>
+      )}
 
       {result && (
         <div className="result-panel">
