@@ -55,6 +55,15 @@ app.get('/api/ml-health', async (req, res) => {
   }
 });
 
+app.get('/api/system-info', (req, res) => {
+  res.json({ 
+    flaskUrl: FLASK_URL,
+    usingDefaultFlask: FLASK_URL === 'http://localhost:5001',
+    port: PORT,
+    nodeVersion: process.version
+  });
+});
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Crop Recommendation
 // ─────────────────────────────────────────────────────────────────────────────
