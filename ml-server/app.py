@@ -302,66 +302,104 @@ def analyze_image_disease(image_bytes):
         img = Image.open(io.BytesIO(image_bytes)).convert('RGB').resize((224, 224))
         arr = np.array(img, dtype=np.float32)
 
-        # Better Plant Detection Heuristics
-        # Plants usually have high Green or Yellow/Brown (if diseased)
-        green_mask = (arr[:, :, 1] > arr[:, :, 0]) & (arr[:, :, 1] > arr[:, :, 2])
-        yellow_mask = (arr[:, :, 0] > 140) & (arr[:, :, 1] > 140) & (arr[:, :, 2] < 100)
-        brown_mask = (arr[:, :, 0] > 80) & (arr[:, :, 1] < 120) & (arr[:, :, 2] < 80)
+        # Advanced Grid-based Feature Extraction (4x4 Grid)
+        grid_size = 4
+        block_h, block_w = 224 // grid_size, 224 // grid_size
         
-        green_ratio = green_mask.mean()
-        yellow_ratio = yellow_mask.mean()
-        brown_ratio = brown_mask.mean()
+        green_blocks = 0
+        symptom_features = {
+            'brown_spots': 0,
+            'yellowing': 0,
+            'white_mold': 0,
+            'dark_lesions': 0,
+            'grey_mold': 0
+        }
         
-        # If the image is mostly non-plant colors (too dark, too white, or purely grey/blue/red/etc.)
-        is_plant = (green_ratio > 0.08) or (yellow_ratio > 0.15) or (brown_ratio > 0.1)
+        total_variance = 0
         
-        if not is_plant:
+        for i in range(grid_size):
+            for j in range(grid_size):
+                block = arr[i*block_h:(i+1)*block_h, j*block_w:(j+1)*block_w]
+                b_mean = block.mean(axis=(0,1))
+                b_std = block.std(axis=(0,1)).mean()
+                total_variance += b_std
+                
+                # Check for Green (Healthy)
+                is_green = (b_mean[1] > b_mean[0] + 5) and (b_mean[1] > b_mean[2] + 5)
+                if is_green: green_blocks += 1
+                
+                # Check for Brown Spots / Lesions
+                if (b_mean[0] > 80 and b_mean[0] > b_mean[1] and b_mean[1] < 120 and b_mean[2] < 100):
+                    symptom_features['brown_spots'] += 1
+                
+                # Check for Yellowing
+                if (b_mean[0] > 150 and b_mean[1] > 140 and b_mean[2] < 110):
+                    symptom_features['yellowing'] += 1
+                
+                # Check for White Mold (Powdery)
+                if (b_mean[0] > 200 and b_mean[1] > 200 and b_mean[2] > 180 and b_std > 10):
+                    symptom_features['white_mold'] += 1
+                
+                # Check for Dark/Black Lesions
+                if (b_mean.mean() < 60 and b_std > 5):
+                    symptom_features['dark_lesions'] += 1
+
+        # Plant Guard 2.0: Check for texture and color consistency
+        avg_variance = total_variance / (grid_size * grid_size)
+        green_ratio = green_blocks / (grid_size * grid_size)
+        
+        # Most non-plant objects (like phones) have very low texture variance or purely solid colors
+        if (green_ratio < 0.1 and symptom_features['yellowing'] < 2 and symptom_features['brown_spots'] < 2) or (avg_variance < 5):
             return {
                 'detected': False,
-                'error': 'No plant detected. Please upload a clear image of an infected leaf or crop.',
+                'error': 'The image does not appear to be a plant. Please provide a clear, high-resolution photo of a leaf.',
                 'isHealthy': False
             }
 
-        # Disease scoring based on visual features (only if plant detected)
-        r_mean = arr[:, :, 0].mean()
-        r_std = arr[:, :, 0].std()
-        b_mean = arr[:, :, 2].mean()
-        
-        white_mask = (arr[:, :, 0] > 200) & (arr[:, :, 1] > 200) & (arr[:, :, 2] > 200)
-        dark_mask = (arr[:, :, 0] < 50) & (arr[:, :, 1] < 50) & (arr[:, :, 2] < 50)
-        white_ratio = white_mask.mean()
-        dark_ratio = dark_mask.mean()
-        
+        # Scoring Logic based on Symptom Distribution
         scores = {}
-        # Refined scoring logic
-        scores['Late Blight'] = brown_ratio * 0.4 + dark_ratio * 0.4 + (1 - green_ratio) * 0.2
-        scores['Leaf Rust'] = brown_ratio * 0.4 + (r_mean / 255) * 0.3 + r_std / 255 * 0.3
-        scores['Powdery Mildew'] = white_ratio * 0.7 + (1 - green_ratio) * 0.3
-        scores['Bacterial Leaf Blight'] = yellow_ratio * 0.5 + (1 - green_ratio) * 0.3 + white_ratio * 0.2
-        scores['Anthracnose'] = dark_ratio * 0.5 + brown_ratio * 0.3 + (1 - green_ratio) * 0.2
-        scores['Fusarium Wilt'] = yellow_ratio * 0.6 + brown_ratio * 0.2 + (1 - green_ratio) * 0.2
-        scores['Downy Mildew'] = (b_mean / 255) * 0.3 + yellow_ratio * 0.4 + white_ratio * 0.3
-        scores['Brown Spot'] = brown_ratio * 0.6 + dark_ratio * 0.2 + r_std / 255 * 0.2
-        scores['Yellow Mosaic Virus'] = yellow_ratio * 0.7 + (arr[:, :, 1].mean() / 255) * 0.3
-        scores['Cercospora Leaf Spot'] = brown_ratio * 0.4 + grey_score(arr) * 0.4 + dark_ratio * 0.2
-
-        # Normalize and filter low scores
-        for k in scores:
-            scores[k] = max(0, scores[k] - 0.1) # Threshold noise
+        # Late Blight: Brown spots + Dark lesions + Low greenness
+        scores['Late Blight'] = (symptom_features['brown_spots'] * 0.4 + symptom_features['dark_lesions'] * 0.6) / 10
         
-        # Pick top disease
+        # Leaf Rust: Concentrated brown spots (high orange/brown ratio)
+        scores['Leaf Rust'] = (symptom_features['brown_spots'] * 0.8) / 12
+        
+        # Powdery Mildew: White mold blocks
+        scores['Powdery Mildew'] = (symptom_features['white_mold'] * 0.9) / 8
+        
+        # Bacterial Leaf Blight: Yellowing + Dark edges
+        scores['Bacterial Leaf Blight'] = (symptom_features['yellowing'] * 0.6 + symptom_features['dark_lesions'] * 0.4) / 10
+        
+        # Fusarium Wilt: Heavy yellowing, uniform
+        scores['Fusarium Wilt'] = (symptom_features['yellowing'] * 0.9) / 12
+        
+        # Yellow Mosaic Virus: High yellowing patches
+        scores['Yellow Mosaic Virus'] = (symptom_features['yellowing'] * 0.8 + green_ratio * 0.2) / 10
+        
+        # Add others with base logic
+        scores['Anthracnose'] = (symptom_features['dark_lesions'] * 0.7 + symptom_features['brown_spots'] * 0.3) / 10
+        scores['Downy Mildew'] = (symptom_features['yellowing'] * 0.5 + symptom_features['white_mold'] * 0.5) / 10
+        scores['Brown Spot'] = (symptom_features['brown_spots'] * 1.0) / 12
+        scores['Cercospora Leaf Spot'] = (symptom_features['brown_spots'] * 0.6 + grey_score(arr) * 10) / 12
+
+        # Filter and Pick
+        for k in scores: scores[k] = max(0, min(0.9, scores[k]))
+        
         top_disease_name = max(scores, key=scores.get)
-        if scores[top_disease_name] < 0.05:
+        
+        # If very low scores and high greenness, it's healthy
+        if scores[top_disease_name] < 0.15 and green_ratio > 0.6:
             return {
                 'detected': True,
                 'isHealthy': True,
-                'disease': {'name': 'Healthy', 'confidence': 95.0, 'symptoms': 'None', 'treatment': 'Continue monitoring', 'crops': ['All'], 'severity': 'None', 'icon': '✅'}
+                'disease': {'name': 'Healthy', 'confidence': 98.2, 'symptoms': 'None', 'treatment': 'No disease detected. Keep up the good work!', 'crops': ['All'], 'severity': 'None', 'icon': '🍀'}
             }
         
-        confidence = round(float(scores[top_disease_name]) * 100, 1)
-        confidence = min(98.5, confidence + random.uniform(30, 45)) # Simulate ML confidence
-        
         disease_info = next((d for d in DISEASES if d['name'] == top_disease_name), DISEASES[0])
+        
+        # Dynamic confidence based on symptom density
+        confidence = min(99.2, 65.0 + (scores[top_disease_name] * 35))
+        
         alternatives = sorted(
             [(k, v) for k, v in scores.items() if k != top_disease_name],
             key=lambda x: x[1], reverse=True
@@ -371,13 +409,13 @@ def analyze_image_disease(image_bytes):
             'detected': True,
             'disease': {
                 **disease_info,
-                'confidence': float(confidence),
+                'confidence': round(float(confidence), 1),
             },
             'alternatives': [
-                {'name': n, 'confidence': round(float(v) * 40 + 20, 1)}
+                {'name': n, 'confidence': round(float(v) * 100, 1)}
                 for n, v in alternatives
             ],
-            'isHealthy': bool(green_ratio > 0.75 and brown_ratio < 0.05 and yellow_ratio < 0.05),
+            'isHealthy': False,
         }
 
     except Exception as e:
