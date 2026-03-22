@@ -15,7 +15,7 @@ import joblib
 
 app = Flask(__name__)
 CORS(app)
-# Redeploy trigger v7 - 2026-03-22: HF model + detailed treatment plans
+# Redeploy trigger v8 - 2026-03-22: Ensemble Vision Engine (Dual HF Models)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Crop Recommendation Data & Model
