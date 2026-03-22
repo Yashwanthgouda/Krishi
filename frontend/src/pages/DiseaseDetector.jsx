@@ -181,7 +181,14 @@ export default function DiseaseDetector() {
       {/* Results Display */}
       {result && (
         <div className="result-panel">
-          {result.isHealthy ? (
+          {!result.detected ? (
+            <div className="card" style={{ borderLeft: '4px solid var(--error)', background: '#FEF2F2', padding: '1.5rem' }}>
+              <p style={{ color: 'var(--error)', fontWeight: 700, margin: 0 }}>⚠️ {result.error}</p>
+              <p style={{ fontSize: '0.875rem', marginTop: '0.5rem', color: 'var(--text-secondary)' }}>
+                Tips: Ensure the plant leaf is centered, well-lit, and occupies most of the frame.
+              </p>
+            </div>
+          ) : result.isHealthy ? (
             <div className="card" style={{ textAlign: 'center', padding: '3rem', borderLeft: '8px solid var(--success)' }}>
               <div style={{ fontSize: '4rem' }}>🌿</div>
               <h2 style={{ fontSize: '2rem', margin: '1rem 0', color: 'var(--success)' }}>{t('healthyTarget')}</h2>
