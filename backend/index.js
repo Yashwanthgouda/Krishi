@@ -47,10 +47,13 @@ app.get('/api/ml-health', async (req, res) => {
     });
   } catch (err) {
     const isColdStart = err.code === 'ECONNABORTED' || err.message.includes('timeout') || err.response?.status === 502;
+    const isDown = err.code === 'ECONNREFUSED';
     res.status(503).json({ 
       success: false, 
-      status: isColdStart ? 'waking_up' : 'down',
-      error: err.message
+      status: isColdStart ? 'waking_up' : (isDown ? 'down' : 'error'),
+      error: isDown 
+        ? `ML Server is not running at ${FLASK_URL}. Please start it using 'python app.py' in the ml-server directory.`
+        : err.message
     });
   }
 });

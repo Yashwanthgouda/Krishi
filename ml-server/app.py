@@ -938,9 +938,43 @@ def get_price_advice(forecast_price, base_price):
 # ─────────────────────────────────────────────────────────────────────────────
 # Flask Routes
 # ─────────────────────────────────────────────────────────────────────────────
+@app.route('/', methods=['GET'])
+def index():
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Krishi ML Server</title>
+        <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f7f0; color: #2d3e2d; display: flex; align-items: center; justifyContent: center; height: 100vh; margin: 0; }
+            .card { background: white; padding: 2.5rem; border-radius: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; max-width: 500px; width: 90%; border-top: 8px solid #4CAF50; }
+            h1 { color: #2e7d32; margin-bottom: 0.5rem; }
+            .status { display: inline-block; padding: 0.5rem 1rem; background: #e8f5e9; color: #2e7d32; border-radius: 2rem; font-weight: 700; font-size: 0.875rem; margin: 1rem 0; }
+            p { line-height: 1.6; color: #666; }
+            .footer { margin-top: 2rem; font-size: 0.75rem; color: #999; }
+        </style>
+    </head>
+    <body>
+        <div class="card">
+            <div style="font-size: 4rem;">🌱</div>
+            <h1>Krishi ML Server</h1>
+            <div class="status">● ACTIVE & RENDERING</div>
+            <p>The Smart Crop Advisory Machine Learning engine is running successfully. This server provides predictions for crop recommendations, disease detection, and market price forecasts.</p>
+            <div class="footer">v8.2.1 • Built for Indian Agriculture</div>
+        </div>
+    </body>
+    </html>
+    """
+
+
 @app.route('/health', methods=['GET'])
 def health():
-    return jsonify({'status': 'ok', 'service': 'Krishi ML Server'})
+    return jsonify({
+        'status': 'ok', 
+        'service': 'Krishi ML Server',
+        'models_loaded': crop_model is not None,
+        'vision_engine': 'Ensemble v2'
+    })
 
 
 @app.route('/predict/crop', methods=['POST'])
