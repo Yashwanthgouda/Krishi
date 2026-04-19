@@ -1,0 +1,171 @@
+{
+  "app": {
+    "name": "కృషి",
+    "tagline": "స్మార్ట్ పంట సలహా"
+  },
+  "lang": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "kn": "ಕನ್ನಡ",
+    "te": "తెలుగు"
+  },
+  "nav": {
+    "home": "హోమ్",
+    "crop": "పంట",
+    "fertilizer": "ఎరువు",
+    "weather": "వాతావరణం",
+    "disease": "వ్యాధి",
+    "prices": "మార్కెట్"
+  },
+  "home": {
+    "greeting": "నమస్తే",
+    "season": "ఖరీఫ్ సీజన్ 2025",
+    "sectionTitle": "మీకు ఏమి కావాలి?",
+    "voiceHint": "మాట్లాడవచ్చు!",
+    "todayDate": "ఈరోజు"
+  },
+  "features": {
+    "crop": {
+      "title": "సరైన పంట",
+      "subtitle": "ఏ పంట వేయాలి?"
+    },
+    "fertilizer": {
+      "title": "సరైన ఎరువు",
+      "subtitle": "ఎంత ఎరువు వేయాలి?"
+    },
+    "weather": {
+      "title": "వాతావరణం",
+      "subtitle": "ఈరోజు వాతావరణం ఏమిటి?"
+    },
+    "disease": {
+      "title": "వ్యాధి గుర్తింపు",
+      "subtitle": "ఆకు ఫోటో తీయండి"
+    },
+    "prices": {
+      "title": "మండి ధరలు",
+      "subtitle": "పంట ధర తెలుసుకోండి"
+    },
+    "voice": {
+      "title": "మాట్లాడండి",
+      "subtitle": "మీ భాషలో చెప్పండి"
+    }
+  },
+  "crop": {
+    "pageTitle": "పంట సలహా",
+    "soilCard": "నేల సమాచారం",
+    "climateCard": "వాతావరణ సమాచారం",
+    "farmCard": "పొలం సమాచారం",
+    "nitrogen": "నత్రజని (నైట్రోజన్)",
+    "phosphorus": "భాస్వరం (ఫాస్పరస్)",
+    "potassium": "పొటాష్",
+    "ph": "నేల నాణ్యత",
+    "temperature": "ఉష్ణోగ్రత",
+    "humidity": "గాలిలో తేమ",
+    "rainfall": "వర్షపాతం",
+    "district": "జిల్లా",
+    "season": "సీజన్",
+    "kharif": "ఖరీఫ్",
+    "rabi": "రబీ",
+    "zaid": "జైద్",
+    "submitBtn": "పంట చెప్పండి",
+    "low": "తక్కువ",
+    "medium": "మధ్యమ",
+    "high": "ఎక్కువ",
+    "resultTitle": "మీకు అత్యుత్తమ పంట",
+    "confidence": "నమ్మకం",
+    "waterNeeded": "రోజూ నీళ్ళు",
+    "sunlight": "ఎండ కావాలి",
+    "harvestIn": "పంట తయారు",
+    "goFertilizer": "ఎరువు సలహా తీసుకోండి"
+  },
+  "fertilizer": {
+    "pageTitle": "ఎరువు సలహా",
+    "cropLabel": "మీ పంట",
+    "areaLabel": "భూమి విస్తీర్ణం",
+    "nLabel": "నేలలో నత్రజని",
+    "pLabel": "నేలలో భాస్వరం",
+    "kLabel": "నేలలో పొటాష్",
+    "submitBtn": "ఎరువు ప్రణాళిక చెప్పండి",
+    "resultTitle": "ఎరువు ప్రణాళిక",
+    "perAcre": "ఎకరాకు",
+    "apply": "ఎప్పుడు వేయాలి",
+    "irrigationTitle": "నీటిపారుదల సమయం"
+  },
+  "disease": {
+    "pageTitle": "వ్యాధి గుర్తింపు",
+    "uploadTitle": "ఆకు ఫోటో తీయండి",
+    "uploadHint": "ఫోటోను ఇక్కడ వేయండి లేదా క్లిక్ చేయండి",
+    "analyzeBtn": "వ్యాధి చూడండి",
+    "loading": "చూస్తున్నాము...",
+    "resultTitle": "వ్యాధి కనుగొనబడింది",
+    "severity": "తీవ్రత",
+    "treatment": "చికిత్స దశలు",
+    "prevention": "నివారణ చిట్కాలు",
+    "healthy": "మొక్క ఆరోగ్యంగా ఉంది!",
+    "healthyMsg": "ఏ వ్యాధీ కనుగొనబడలేదు.",
+    "low": "తేలికైన",
+    "medium": "మధ్యమ",
+    "high": "తీవ్రమైన"
+  },
+  "prices": {
+    "pageTitle": "మండి ధరలు",
+    "selectCrop": "పంట ఎంచుకోండి",
+    "currentPrice": "ప్రస్తుత ధర",
+    "trend": "ధోరణి",
+    "forecast": "AI అంచనా",
+    "bestTime": "అమ్మడానికి అత్యుత్తమ సమయం",
+    "perQuintal": "క్వింటాల్ కు",
+    "months": "నెలలు",
+    "generateBtn": "ధర తెలుసుకోండి",
+    "searchPlaceholder": "ఏదైనా పంటను వెతకండి..."
+  },
+  "voice": {
+    "tapToSpeak": "నొక్కి మాట్లాడండి",
+    "listening": "వింటున్నాము...",
+    "commands": "ఇలా చెప్పండి:",
+    "cmd_crop": "పంట చెప్పు",
+    "cmd_weather": "వాతావరణం చూపించు",
+    "cmd_fertilizer": "ఎరువు చెప్పు",
+    "cmd_prices": "మండి ధరలు చూపించు",
+    "speakCommand": "మీ కమాండ్ చెప్పండి..."
+  },
+  "common": {
+    "loading": "లోడ్ అవుతోంది...",
+    "error": "ఏదో తప్పు జరిగింది",
+    "retry": "మళ్ళీ ప్రయత్నించండి",
+    "back": "వెనక్కి",
+    "submit": "సమర్పించు",
+    "cancel": "రద్దు చేయి",
+    "offline": "ఇంటర్నెట్ లేదు — పాత డేటా చూపిస్తున్నాము",
+    "days": "రోజులు",
+    "hours": "గంటలు",
+    "kmph": "కి.మీ/గం",
+    "percent": "%",
+    "rupee": "₹",
+    "quintal": "క్వింటాల్",
+    "acre": "ఎకరా",
+    "bigha": "బీఘా",
+    "hectare": "హెక్టారు",
+    "search": "వెతుకు"
+  },
+  "crops": {
+    "rice": "వరి",
+    "wheat": "గోధుమ",
+    "maize": "మొక్కజొన్న",
+    "sugarcane": "చెరుకు",
+    "cotton": "పత్తి",
+    "banana": "అరటి",
+    "mango": "మామిడి",
+    "chickpea": "శనగ",
+    "lentil": "కంది",
+    "coffee": "కాఫీ",
+    "coconut": "కొబ్బరి",
+    "grapes": "ద్రాక్ష",
+    "soybean": "సోయాబీన్",
+    "mustard": "ఆవాలు",
+    "groundnut": "వేరుశనగ",
+    "potato": "బంగాళదుంప",
+    "tomato": "టమోటా",
+    "onion": "ఉల్లిపాయ"
+  }
+}

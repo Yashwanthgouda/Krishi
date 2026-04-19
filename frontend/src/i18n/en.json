@@ -1,0 +1,186 @@
+{
+  "app": {
+    "name": "Krishi",
+    "tagline": "Smart Crop Advisory"
+  },
+  "lang": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "kn": "ಕನ್ನಡ",
+    "te": "తెలుగు"
+  },
+  "nav": {
+    "home": "Home",
+    "crop": "Crop",
+    "fertilizer": "Fertilizer",
+    "weather": "Weather",
+    "disease": "Disease",
+    "prices": "Prices"
+  },
+  "home": {
+    "greeting": "Namaste",
+    "season": "Kharif Season 2025",
+    "sectionTitle": "What do you need today?",
+    "voiceHint": "You can speak!",
+    "todayDate": "Today"
+  },
+  "features": {
+    "crop": {
+      "title": "Right Crop",
+      "subtitle": "Which crop to grow?"
+    },
+    "fertilizer": {
+      "title": "Right Fertilizer",
+      "subtitle": "How much fertilizer to use?"
+    },
+    "weather": {
+      "title": "Weather",
+      "subtitle": "What is today's weather?"
+    },
+    "disease": {
+      "title": "Disease Check",
+      "subtitle": "Take a photo of the leaf"
+    },
+    "prices": {
+      "title": "Mandi Prices",
+      "subtitle": "Price of your crop"
+    },
+    "voice": {
+      "title": "Talk to Krishi",
+      "subtitle": "Speak in your language"
+    }
+  },
+  "weather": {
+    "loading": "Getting weather...",
+    "city": "City",
+    "search": "Search",
+    "searchPlaceholder": "Enter city name...",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "feels": "Feels like",
+    "forecast": "7-Day Forecast",
+    "alerts": "Farming Advice",
+    "rainAlert": "Rain expected in 2 days - cover your crops",
+    "sprayOk": "Good day to spray pesticide",
+    "windAlert": "Strong winds - switch off pumps",
+    "today": "Today"
+  },
+  "crop": {
+    "pageTitle": "Crop Recommendation",
+    "soilCard": "Soil Information",
+    "climateCard": "Climate Information",
+    "farmCard": "Farm Information",
+    "nitrogen": "Nitrogen (Nailan)",
+    "phosphorus": "Phosphorus (Fasforas)",
+    "potassium": "Potassium (Potash)",
+    "ph": "Soil Quality (Mitti)",
+    "temperature": "Temperature (Tapman)",
+    "humidity": "Moisture in Air (Hawa Pani)",
+    "rainfall": "Rainfall (Baarish)",
+    "district": "District",
+    "season": "Season",
+    "kharif": "Kharif",
+    "rabi": "Rabi",
+    "zaid": "Zaid",
+    "submitBtn": "Tell me the Crop",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "resultTitle": "Best Crop for You",
+    "confidence": "Confidence",
+    "waterNeeded": "Water needed per day",
+    "sunlight": "Sunlight needed",
+    "harvestIn": "Ready in",
+    "goFertilizer": "Get Fertilizer Advice"
+  },
+  "fertilizer": {
+    "pageTitle": "Fertilizer Advisory",
+    "cropLabel": "Your Crop",
+    "areaLabel": "Land Area (Zameen)",
+    "nLabel": "Nitrogen in soil",
+    "pLabel": "Phosphorus in soil",
+    "kLabel": "Potassium in soil",
+    "submitBtn": "Get Fertilizer Plan",
+    "resultTitle": "Fertilizer Plan",
+    "perAcre": "per acre",
+    "apply": "When to apply",
+    "irrigationTitle": "Irrigation Timeline"
+  },
+  "disease": {
+    "pageTitle": "Disease Detection",
+    "uploadTitle": "Take Leaf Photo",
+    "uploadHint": "Click or drag a leaf photo here",
+    "analyzeBtn": "Check Disease",
+    "loading": "Checking...",
+    "resultTitle": "Disease Found",
+    "severity": "Severity",
+    "treatment": "Treatment Steps",
+    "prevention": "Prevention Tips",
+    "healthy": "Plant looks healthy!",
+    "healthyMsg": "No disease found. Keep monitoring regularly.",
+    "low": "Mild",
+    "medium": "Moderate",
+    "high": "Serious"
+  },
+  "prices": {
+    "pageTitle": "Mandi Prices",
+    "selectCrop": "Select Crop",
+    "currentPrice": "Current Price",
+    "trend": "Trend",
+    "forecast": "AI Prediction",
+    "bestTime": "Best time to sell",
+    "perQuintal": "per quintal",
+    "months": "Months",
+    "generateBtn": "Get Price Forecast",
+    "searchPlaceholder": "Search any crop..."
+  },
+  "voice": {
+    "tapToSpeak": "Tap to speak",
+    "listening": "Listening...",
+    "commands": "Try saying:",
+    "cmd_crop": "Tell me which crop",
+    "cmd_weather": "Show weather",
+    "cmd_fertilizer": "Tell me about fertilizer",
+    "cmd_prices": "Show mandi prices",
+    "speakCommand": "Speak your command..."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "back": "Back",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "offline": "No internet — showing old data",
+    "days": "days",
+    "hours": "hours",
+    "kmph": "km/h",
+    "percent": "%",
+    "rupee": "₹",
+    "quintal": "Quintal",
+    "acre": "Acre",
+    "bigha": "Bigha",
+    "hectare": "Hectare",
+    "search": "Search"
+  },
+  "crops": {
+    "rice": "Rice",
+    "wheat": "Wheat",
+    "maize": "Maize",
+    "sugarcane": "Sugarcane",
+    "cotton": "Cotton",
+    "banana": "Banana",
+    "mango": "Mango",
+    "chickpea": "Chickpea",
+    "lentil": "Lentil",
+    "coffee": "Coffee",
+    "coconut": "Coconut",
+    "grapes": "Grapes",
+    "soybean": "Soybean",
+    "mustard": "Mustard",
+    "groundnut": "Groundnut",
+    "potato": "Potato",
+    "tomato": "Tomato",
+    "onion": "Onion"
+  }
+}

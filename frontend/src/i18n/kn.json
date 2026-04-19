@@ -1,0 +1,171 @@
+{
+  "app": {
+    "name": "ಕೃಷಿ",
+    "tagline": "ಸ್ಮಾರ್ಟ್ ಬೆಳೆ ಸಲಹೆ"
+  },
+  "lang": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "kn": "ಕನ್ನಡ",
+    "te": "తెలుగు"
+  },
+  "nav": {
+    "home": "ಮನೆ",
+    "crop": "ಬೆಳೆ",
+    "fertilizer": "ಗೊಬ್ಬರ",
+    "weather": "ಹವಾಮಾನ",
+    "disease": "ರೋಗ",
+    "prices": "ಮಾರುಕಟ್ಟೆ"
+  },
+  "home": {
+    "greeting": "ನಮಸ್ತೆ",
+    "season": "ಖರೀಫ್ ಸೀಸನ್ 2025",
+    "sectionTitle": "ಇಂದು ನಿಮಗೆ ಏನು ಬೇಕು?",
+    "voiceHint": "ಮಾತನಾಡಬಹುದು!",
+    "todayDate": "ಇಂದು"
+  },
+  "features": {
+    "crop": {
+      "title": "ಸರಿಯಾದ ಬೆಳೆ",
+      "subtitle": "ಯಾವ ಬೆಳೆ ಹಾಕಬೇಕು?"
+    },
+    "fertilizer": {
+      "title": "ಸರಿಯಾದ ಗೊಬ್ಬರ",
+      "subtitle": "ಎಷ್ಟು ಗೊಬ್ಬರ ಕೊಡಬೇಕು?"
+    },
+    "weather": {
+      "title": "ಹವಾಮಾನ",
+      "subtitle": "ಇಂದು ಹೇಗಿದೆ ಹವಾಮಾನ?"
+    },
+    "disease": {
+      "title": "ರೋಗ ಪತ್ತೆ",
+      "subtitle": "ಎಲೆಯ ಫೋಟೋ ತೆಗೆಯಿರಿ"
+    },
+    "prices": {
+      "title": "ಮಾರುಕಟ್ಟೆ ಬೆಲೆ",
+      "subtitle": "ಬೆಳೆಯ ಬೆಲೆ ತಿಳಿಯಿರಿ"
+    },
+    "voice": {
+      "title": "ಮಾತನಾಡಿ",
+      "subtitle": "ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಹೇಳಿ"
+    }
+  },
+  "crop": {
+    "pageTitle": "ಬೆಳೆ ಸಲಹೆ",
+    "soilCard": "ಮಣ್ಣಿನ ಮಾಹಿತಿ",
+    "climateCard": "ಹವಾಮಾನ ಮಾಹಿತಿ",
+    "farmCard": "ಹೊಲದ ಮಾಹಿತಿ",
+    "nitrogen": "ಸಾರಜನಕ (ನೈಟ್ರೋಜನ್)",
+    "phosphorus": "ರಂಜಕ (ಫಾಸ್ಫರಸ್)",
+    "potassium": "ಪೊಟ್ಯಾಷ್",
+    "ph": "ಮಣ್ಣಿನ ಗುಣಮಟ್ಟ",
+    "temperature": "ತಾಪಮಾನ",
+    "humidity": "ಗಾಳಿಯಲ್ಲಿ ತೇವ",
+    "rainfall": "ಮಳೆ",
+    "district": "ಜಿಲ್ಲೆ",
+    "season": "ಋತು",
+    "kharif": "ಖರೀಫ್",
+    "rabi": "ರಬಿ",
+    "zaid": "ಝೈದ್",
+    "submitBtn": "ಬೆಳೆ ಹೇಳಿ",
+    "low": "ಕಡಿಮೆ",
+    "medium": "ಮಧ್ಯಮ",
+    "high": "ಹೆಚ್ಚು",
+    "resultTitle": "ನಿಮಗೆ ಉತ್ತಮ ಬೆಳೆ",
+    "confidence": "ಖಚಿತತೆ",
+    "waterNeeded": "ದಿನಕ್ಕೆ ನೀರು",
+    "sunlight": "ಬೆಳಕು ಬೇಕು",
+    "harvestIn": "ಬೆಳೆ ತಯಾರು",
+    "goFertilizer": "ಗೊಬ್ಬರ ಸಲಹೆ ಪಡೆಯಿರಿ"
+  },
+  "fertilizer": {
+    "pageTitle": "ಗೊಬ್ಬರ ಸಲಹೆ",
+    "cropLabel": "ನಿಮ್ಮ ಬೆಳೆ",
+    "areaLabel": "ಭೂಮಿ ವಿಸ್ತೀರ್ಣ",
+    "nLabel": "ಮಣ್ಣಿನಲ್ಲಿ ಸಾರಜನಕ",
+    "pLabel": "ಮಣ್ಣಿನಲ್ಲಿ ರಂಜಕ",
+    "kLabel": "ಮಣ್ಣಿನಲ್ಲಿ ಪೊಟ್ಯಾಷ್",
+    "submitBtn": "ಗೊಬ್ಬರ ಯೋಜನೆ ನೀಡಿ",
+    "resultTitle": "ಗೊಬ್ಬರ ಯೋಜನೆ",
+    "perAcre": "ಪ್ರತಿ ಎಕರೆ",
+    "apply": "ಯಾವಾಗ ಹಾಕಬೇಕು",
+    "irrigationTitle": "ನೀರಾವರಿ ಸಮಯ"
+  },
+  "disease": {
+    "pageTitle": "ರೋಗ ಪತ್ತೆ",
+    "uploadTitle": "ಎಲೆಯ ಫೋಟೋ ತೆಗೆಯಿರಿ",
+    "uploadHint": "ಫೋಟೋ ಇಲ್ಲಿ ಹಾಕಿ ಅಥವಾ ಕ್ಲಿಕ್ ಮಾಡಿ",
+    "analyzeBtn": "ರೋಗ ನೋಡಿ",
+    "loading": "ತಪಾಸಿಸುತ್ತಿದ್ದೇವೆ...",
+    "resultTitle": "ರೋಗ ಕಂಡುಬಂದಿದೆ",
+    "severity": "ತೀವ್ರತೆ",
+    "treatment": "ಚಿಕಿತ್ಸೆ ಹಂತಗಳು",
+    "prevention": "ತಡೆಗಟ್ಟುವ ಸಲಹೆ",
+    "healthy": "ಗಿಡ ಆರೋಗ್ಯಕರವಾಗಿದೆ!",
+    "healthyMsg": "ಯಾವ ರೋಗವೂ ಕಂಡುಬಂದಿಲ್ಲ.",
+    "low": "ಹಗುರ",
+    "medium": "ಮಧ್ಯಮ",
+    "high": "ತೀವ್ರ"
+  },
+  "prices": {
+    "pageTitle": "ಮಾರುಕಟ್ಟೆ ಬೆಲೆ",
+    "selectCrop": "ಬೆಳೆ ಆಯ್ಕೆ",
+    "currentPrice": "ಈಗಿನ ಬೆಲೆ",
+    "trend": "ಪ್ರವೃತ್ತಿ",
+    "forecast": "AI ಅಂದಾಜು",
+    "bestTime": "ಮಾರಾಟಕ್ಕೆ ಉತ್ತಮ ಸಮಯ",
+    "perQuintal": "ಪ್ರತಿ ಕ್ವಿಂಟಾಲ್",
+    "months": "ತಿಂಗಳುಗಳು",
+    "generateBtn": "ಬೆಲೆ ತಿಳಿಯಿರಿ",
+    "searchPlaceholder": "ಯಾವುದೇ ಬೆಳೆಯನ್ನು ಹುಡುಕಿ..."
+  },
+  "voice": {
+    "tapToSpeak": "ಟ್ಯಾಪ್ ಮಾಡಿ ಮಾತನಾಡಿ",
+    "listening": "ಕೇಳುತ್ತಿದ್ದೇವೆ...",
+    "commands": "ಹೀಗೆ ಹೇಳಿ:",
+    "cmd_crop": "ಬೆಳೆ ಹೇಳಿ",
+    "cmd_weather": "ಹವಾಮಾನ ತೋರಿಸಿ",
+    "cmd_fertilizer": "ಗೊಬ್ಬರ ಹೇಳಿ",
+    "cmd_prices": "ಮಾರುಕಟ್ಟೆ ಬೆಲೆ ತೋರಿಸಿ",
+    "speakCommand": "ನಿಮ್ಮ ಆದೇಶವನ್ನು ಹೇಳಿ..."
+  },
+  "common": {
+    "loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+    "error": "ಏನೋ ತೊಂದರೆ ಆಯಿತು",
+    "retry": "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+    "back": "ಹಿಂದೆ",
+    "submit": "ಸಲ್ಲಿಸಿ",
+    "cancel": "ರದ್ದುಗೊಳಿಸಿ",
+    "offline": "ಇಂಟರ್ನೆಟ್ ಇಲ್ಲ — ಹಳೆಯ ಡೇಟಾ ತೋರಿಸುತ್ತಿದ್ದೇವೆ",
+    "days": "ದಿನ",
+    "hours": "ಗಂಟೆ",
+    "kmph": "ಕಿಮಿ/ಗಂಟೆ",
+    "percent": "%",
+    "rupee": "₹",
+    "quintal": "ಕ್ವಿಂಟಾಲ್",
+    "acre": "ಎಕರೆ",
+    "bigha": "ಬಿಘಾ",
+    "hectare": "ಹೆಕ್ಟೇರ್",
+    "search": "ಹುಡುಕು"
+  },
+  "crops": {
+    "rice": "ಭತ್ತ",
+    "wheat": "ಗೋಧಿ",
+    "maize": "ಮೆಕ್ಕೆಜೋಳ",
+    "sugarcane": "ಕಬ್ಬು",
+    "cotton": "ಹತ್ತಿ",
+    "banana": "ಬಾಳೆಹಣ್ಣು",
+    "mango": "ಮಾವಿನಹಣ್ಣು",
+    "chickpea": "ಕಡಲೆ",
+    "lentil": "ತೊಗರಿ",
+    "coffee": "ಕಾಫಿ",
+    "coconut": "ತೆಂಗಿನಕಾಯಿ",
+    "grapes": "ದ್ರಾಕ್ಷಿ",
+    "soybean": "ಸೋಯಾಬೀನ್",
+    "mustard": "ಸಾಸಿವೆ",
+    "groundnut": "ಕಡಲೆಕಾಯಿ",
+    "potato": "ಆಲೂಗಡ್ಡೆ",
+    "tomato": "ಟೊಮೆಟೊ",
+    "onion": "ಈರುಳ್ಳಿ"
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "app": {
+    "name": "कृषि",
+    "tagline": "स्मार्ट फसल सलाह"
+  },
+  "lang": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "kn": "ಕನ್ನಡ",
+    "te": "తెలుగు"
+  },
+  "nav": {
+    "home": "होम",
+    "crop": "फसल",
+    "fertilizer": "खाद",
+    "weather": "मौसम",
+    "disease": "बीमारी",
+    "prices": "मंडी"
+  },
+  "home": {
+    "greeting": "नमस्ते",
+    "season": "खरीफ सीज़न 2025",
+    "sectionTitle": "आज क्या चाहिए आपको?",
+    "voiceHint": "बोल सकते हैं!",
+    "todayDate": "आज"
+  },
+  "features": {
+    "crop": {
+      "title": "सही फसल",
+      "subtitle": "कौन सी फसल लगाएं?"
+    },
+    "fertilizer": {
+      "title": "सही खाद",
+      "subtitle": "कितनी खाद दें?"
+    },
+    "weather": {
+      "title": "मौसम देखें",
+      "subtitle": "आज कैसा मौसम है?"
+    },
+    "disease": {
+      "title": "बीमारी पकड़ो",
+      "subtitle": "पत्ते की फोटो लो"
+    },
+    "prices": {
+      "title": "मंडी भाव",
+      "subtitle": "फसल की कीमत"
+    },
+    "voice": {
+      "title": "बात करो",
+      "subtitle": "अपनी भाषा में बोलो"
+    }
+  },
+  "weather": {
+    "loading": "मौसम पता कर रहे हैं...",
+    "city": "शहर",
+    "search": "खोजें",
+    "searchPlaceholder": "शहर का नाम लिखें...",
+    "humidity": "नमी",
+    "wind": "हवा",
+    "feels": "महसूस होता है",
+    "forecast": "7 दिन का मौसम",
+    "alerts": "खेत के लिए सलाह",
+    "rainAlert": "2 दिन में बारिश — फसल ढको",
+    "sprayOk": "आज दवाई छिड़क सकते हैं",
+    "windAlert": "तेज हवा — पंप बंद रखो",
+    "today": "आज"
+  },
+  "crop": {
+    "pageTitle": "फसल की सलाह",
+    "soilCard": "मिट्टी की जानकारी",
+    "climateCard": "मौसम की जानकारी",
+    "farmCard": "खेत की जानकारी",
+    "nitrogen": "नाइट्रोजन (नाइलान)",
+    "phosphorus": "फास्फोरस (फासफोरस)",
+    "potassium": "पोटाश (पोटास)",
+    "ph": "मिट्टी की गुणवत्ता",
+    "temperature": "तापमान",
+    "humidity": "हवा में पानी",
+    "rainfall": "बारिश",
+    "district": "जिला",
+    "season": "मौसम",
+    "kharif": "खरीफ",
+    "rabi": "रबी",
+    "zaid": "ज़ैद",
+    "submitBtn": "फसल बताओ",
+    "low": "कम",
+    "medium": "मध्यम",
+    "high": "ज़्यादा",
+    "resultTitle": "आपके लिए सबसे अच्छी फसल",
+    "confidence": "सटीकता",
+    "waterNeeded": "रोज़ पानी",
+    "sunlight": "धूप चाहिए",
+    "harvestIn": "फसल तैयार",
+    "goFertilizer": "खाद की सलाह लो"
+  },
+  "fertilizer": {
+    "pageTitle": "खाद की सलाह",
+    "cropLabel": "आपकी फसल",
+    "areaLabel": "ज़मीन का क्षेत्रफल",
+    "nLabel": "मिट्टी में नाइट्रोजन",
+    "pLabel": "मिट्टी में फास्फोरस",
+    "kLabel": "मिट्टी में पोटाश",
+    "submitBtn": "खाद की योजना बताओ",
+    "resultTitle": "खाद की योजना",
+    "perAcre": "प्रति एकड़",
+    "apply": "कब डालें",
+    "irrigationTitle": "सिंचाई का समय"
+  },
+  "disease": {
+    "pageTitle": "बीमारी पहचान",
+    "uploadTitle": "पत्ते की फोटो लो",
+    "uploadHint": "फोटो यहाँ डालो या क्लिक करो",
+    "analyzeBtn": "बीमारी देखो",
+    "loading": "देख रहे हैं...",
+    "resultTitle": "बीमारी पाई गई",
+    "severity": "गंभीरता",
+    "treatment": "इलाज के कदम",
+    "prevention": "बचाव के उपाय",
+    "healthy": "पौधा स्वस्थ है!",
+    "healthyMsg": "कोई बीमारी नहीं मिली। नियमित जाँच करते रहें।",
+    "low": "हल्की",
+    "medium": "मध्यम",
+    "high": "गंभीर"
+  },
+  "prices": {
+    "pageTitle": "मंडी भाव",
+    "selectCrop": "फसल चुनें",
+    "currentPrice": "अभी का भाव",
+    "trend": "रुझान",
+    "forecast": "AI अनुमान",
+    "bestTime": "बेचने का सही समय",
+    "perQuintal": "प्रति क्विंटल",
+    "months": "महीने",
+    "generateBtn": "भाव जानो",
+    "searchPlaceholder": "कोई भी फसल खोजें..."
+  },
+  "voice": {
+    "tapToSpeak": "टैप करके बोलें",
+    "listening": "सुन रहे हैं...",
+    "commands": "ऐसे बोलें:",
+    "cmd_crop": "फसल बताओ",
+    "cmd_weather": "मौसम दिखाओ",
+    "cmd_fertilizer": "खाद बताओ",
+    "cmd_prices": "मंडी भाव दिखाओ",
+    "speakCommand": "अपना आदेश बोलें..."
+  },
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "कुछ गड़बड़ हुई",
+    "retry": "फिर कोशिश करें",
+    "back": "वापस",
+    "submit": "जमा करें",
+    "cancel": "रद्द करें",
+    "offline": "इंटरनेट नहीं है — पुराना डेटा दिख रहा है",
+    "days": "दिन",
+    "hours": "घंटे",
+    "kmph": "किमी/घंटा",
+    "percent": "%",
+    "rupee": "₹",
+    "quintal": "क्विंटल",
+    "acre": "एकड़",
+    "bigha": "बीघा",
+    "hectare": "हेक्टेयर",
+    "search": "खोजें"
+  },
+  "crops": {
+    "rice": "चावल",
+    "wheat": "गेहूँ",
+    "maize": "मक्का",
+    "sugarcane": "गन्ना",
+    "cotton": "कपास",
+    "banana": "केला",
+    "mango": "आम",
+    "chickpea": "चना",
+    "lentil": "मसूर",
+    "coffee": "कॉफी",
+    "coconut": "नारियल",
+    "grapes": "अंगूर",
+    "soybean": "सोयाबीन",
+    "mustard": "सरसों",
+    "groundnut": "मूंगफली",
+    "potato": "आलू",
+    "tomato": "टमाटर",
+    "onion": "प्याज"
+  }
+}

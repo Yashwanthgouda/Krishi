@@ -3,19 +3,57 @@ Krishi ML Server - Flask Application
 Serves all ML model predictions for the Smart Crop Advisory System
 """
 import os
+import io
+import time
 import json
 import base64
-import io
+import joblib
+import warnings
 import numpy as np
 import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import random
-import joblib
+from deep_translator import GoogleTranslator
+
+# Suppress warnings
+warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
 CORS(app)
-# Redeploy trigger v8 - 2026-03-22: Ensemble Vision Engine (Dual HF Models)
+
+TRANSLATION_CACHE = {}
+
+def translate_text(text, target_lang):
+    if not text or not target_lang or target_lang[:2] == 'en':
+        return text
+    
+    # Map React i18n lang to googletrans supported languages
+    t_lang = target_lang[:2]
+    cache_key = f"{t_lang}_{hash(text)}"
+    if cache_key in TRANSLATION_CACHE:
+        return TRANSLATION_CACHE[cache_key]
+
+    try:
+        translated = GoogleTranslator(source='en', target=t_lang).translate(text)
+        TRANSLATION_CACHE[cache_key] = translated
+        return translated
+    except Exception as e:
+        print(f"Translation failed: {e}")
+        return text
+
+def translate_to_english(text):
+    if not text: return 'rice'
+    cache_key = f"to_en_{hash(text)}"
+    if cache_key in TRANSLATION_CACHE:
+        return TRANSLATION_CACHE[cache_key]
+    try:
+        translated = GoogleTranslator(source='auto', target='en').translate(text).strip().lower()
+        TRANSLATION_CACHE[cache_key] = translated
+        return translated
+    except Exception:
+        return text.strip().lower()
+
+# Map to store loaded modelsoy trigger v8 - 2026-03-22: Ensemble Vision Engine (Dual HF Models)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Crop Recommendation Data & Model
@@ -890,7 +928,7 @@ def generate_price_forecast(crop, district, months=6):
             'trend': 'Rising' if forecast[-1] > hist_prices[-1] else 'Falling',
             'trendPercent': round((float(forecast[-1]) - hist_prices[-1]) / hist_prices[-1] * 100, 1),
             'msp': round(base * 0.85, 0),
-            'advice': get_price_advice(float(forecast[-1]), base),
+            'advice': get_price_advice(float(forecast[-1]), hist_prices[-1]),
         }
     except Exception as e:
         # Fallback without ARIMA
@@ -912,24 +950,28 @@ def generate_price_forecast_simple(crop, district, months=6):
         noise = np.random.normal(0, base * 0.025)
         prices.append(round(trend * seasonal + noise, 0))
 
+    current_price = round(base * SEASONAL_FACTORS[current_month], 0)
     return {
         'crop': crop, 'district': district, 'currency': 'INR/Quintal',
-        'currentPrice': round(base * SEASONAL_FACTORS[current_month], 0),
+        'currentPrice': current_price,
         'forecastPrices': prices, 'forecastLabels': labels,
         'trend': 'Rising' if prices[-1] > prices[0] else 'Falling',
         'trendPercent': round((prices[-1] - prices[0]) / prices[0] * 100, 1),
         'msp': round(base * 0.85, 0),
-        'advice': get_price_advice(prices[-1], base),
+        'advice': get_price_advice(prices[-1], current_price),
     }
 
 
-def get_price_advice(forecast_price, base_price):
-    ratio = forecast_price / base_price
-    if ratio > 1.15:
+def get_price_advice(forecast_price, current_price):
+    if current_price <= 0:
+        return '➡️ Prices expected to remain stable. Sell based on your cash-flow needs.'
+        
+    ratio = forecast_price / current_price
+    if ratio > 1.10:
         return '📈 Prices expected to rise significantly. Consider selling after 1–2 months for higher returns.'
-    elif ratio > 1.05:
+    elif ratio > 1.03:
         return '📊 Moderate price increase expected. Good time to plan storage and phased selling.'
-    elif ratio < 0.90:
+    elif ratio < 0.95:
         return '📉 Prices may fall. Consider selling now or explore cold-storage options.'
     else:
         return '➡️ Prices expected to remain stable. Sell based on your cash-flow needs.'
@@ -1019,13 +1061,24 @@ def predict_crop():
 def predict_fertilizer():
     try:
         data = request.json
+        lang = data.get('lang', 'en')
+        crop_en = translate_to_english(data.get('crop', 'rice'))
         result = get_fertilizer_advice(
-            crop=data.get('crop', 'rice'),
+            crop=crop_en,
             soil_n=float(data.get('N', 40)),
             soil_p=float(data.get('P', 20)),
             soil_k=float(data.get('K', 20)),
             area_hectares=float(data.get('area', 1.0)),
         )
+        
+        if 'recommendations' in result:
+             for r in result['recommendations']:
+                 r['fertilizer'] = translate_text(r['fertilizer'], lang)
+        if 'irrigation' in result:
+            result['irrigation'] = [translate_text(i, lang) for i in result['irrigation']]
+        if 'organic_alternatives' in result:
+            result['organic_alternatives'] = [translate_text(o, lang) for o in result['organic_alternatives']]
+            
         return jsonify({'success': True, **result})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -1034,9 +1087,12 @@ def predict_fertilizer():
 @app.route('/predict/disease', methods=['POST'])
 def predict_disease():
     try:
+        lang = 'en'
         if 'image' in request.files:
+            lang = request.form.get('lang', 'en')
             image_bytes = request.files['image'].read()
         elif request.json and 'imageBase64' in request.json:
+            lang = request.json.get('lang', 'en')
             img_data = request.json['imageBase64']
             if ',' in img_data:
                 img_data = img_data.split(',')[1]
@@ -1045,6 +1101,17 @@ def predict_disease():
             return jsonify({'success': False, 'error': 'No image provided'}), 400
 
         result = analyze_image_disease(image_bytes)
+        
+        if result and 'disease' in result:
+             d = result['disease']
+             d['name'] = translate_text(d.get('name', ''), lang)
+             d['symptoms'] = translate_text(d.get('symptoms', ''), lang)
+             d['treatment'] = translate_text(d.get('treatment', ''), lang)
+             
+        if result and 'alternatives' in result:
+             for alt in result['alternatives']:
+                 alt['name'] = translate_text(alt.get('name', ''), lang)
+
         return jsonify({'success': True, **result})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
@@ -1054,10 +1121,16 @@ def predict_disease():
 def predict_price():
     try:
         data = request.json
-        crop = data.get('crop', 'rice')
+        lang = data.get('lang', 'en')
+        crop_en = translate_to_english(data.get('crop', 'rice'))
         district = data.get('district', 'Bangalore')
         months = int(data.get('months', 6))
-        result = generate_price_forecast(crop, district, months)
+        
+        result = generate_price_forecast(crop_en, district, months)
+        
+        if result and result.get('advice'):
+            result['advice'] = translate_text(result['advice'], lang)
+            
         return jsonify({'success': True, **result})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500

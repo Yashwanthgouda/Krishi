@@ -1,17 +1,19 @@
-# 🌱 Krishi – Smart Crop Advisory System
+# 🌱 Krishi – Advanced Smart Crop Advisory System
 
-> AI-powered farming assistant for Indian small and marginal farmers.
-> Crop recommendation · Fertilizer advisory · Weather forecasts · Disease detection · Market prices · Multilingual voice interface
+> An AI-powered, meticulously designed farming assistant tailored for Indian farmers.  
+> **Features:** Crop recommendation · Fertilizer advisory · Real-time Weather · ML Disease Detection · Market Price Forecasts · Multilingual Voice AI
 
 ---
 
-## 🗂 Project Structure
+## 🗂 Project Architecture
+
+This application represents a full-stack, decoupled architecture optimized for rapid ML predictions and a highly responsive user experience.
 
 ```
 Krishi/
-├── frontend/         # React.js web app (Vite)
-├── backend/          # Node.js Express API server
-├── ml-server/        # Python Flask ML model server
+├── frontend/         # React.js (Vite) + Tailwind + Framer Motion + i18next
+├── backend/          # Node.js Express API Server (Caches, Routes, Geolocation)
+├── ml-server/        # Python Flask ML Server (Ensemble Models, ARIMA, Auto-Translators)
 └── README.md
 ```
 
@@ -22,130 +24,95 @@ Krishi/
 ### Prerequisites
 - Node.js 18+ and npm
 - Python 3.9+
-- (Optional) OpenWeatherMap free API key from https://openweathermap.org/api
 
 ---
 
 ### 1. Start the Flask ML Server
+This server handles the heavy lifting: HuggingFace Vision Models, ARIMA time-series, Random Forests, and real-time Natural Language Translation.
 
 ```bash
 cd ml-server
 pip install -r requirements.txt
 python app.py
-# Runs on http://localhost:5001
+# Runs securely on http://localhost:5001
 ```
 
-> 📝 First run will train the crop recommendation model (~10 seconds)
+> **Note:** The server loads Deep-Translator and HuggingFace models automatically. Ensure you have an internet connection for translation capabilities.
 
 ---
 
-### 2. Configure Backend (Optional – for live weather)
-
-Edit `backend/.env`:
-```
-OPENWEATHERMAP_API_KEY=your_key_here
-```
-> Without this, the app uses realistic mock weather data automatically.
-
-### 3. Start the Node.js Backend
+### 2. Start the Node.js API Gateway
 
 ```bash
 cd backend
 npm install
 node index.js
-# Runs on http://localhost:5000
+# Runs instantly on http://localhost:5000
 ```
+
+> **Note:** The backend uses Open-Meteo for hyper-local weather. No API/Auth keys are required! It features an in-memory geocoding cache for sub-millisecond city lookups.
 
 ---
 
-### 4. Start the React Frontend
+### 3. Start the React Frontend
 
 ```bash
 cd frontend
 npm install
 npm run dev
-# Opens http://localhost:5173
+# Opens beautifully on http://localhost:5173
 ```
 
-Open **http://localhost:5173** in Chrome for full voice support.
+> **Tip:** Open the application in Chrome/Edge for the best Web Speech AI Synthesis experience.
 
 ---
 
-## 🧠 Features
+## 🧠 Breakthrough Features
 
-| Module | Technology | Description |
+| Module | Core Technology | Description |
 |--------|-----------|-------------|
-| 🌾 Crop Recommendation | Random Forest (scikit-learn) | Recommends best crops from N,P,K,pH,temp,humidity,rainfall |
-| 🧪 Fertilizer Advisory | Rule-based + NPK deficit | Precise fertilizer dosage + irrigation tips |
-| 🌤️ Weather Forecast | OpenWeatherMap API | Current + 7-day forecast with farming alerts |
-| 🔬 Disease Detection | Color analysis CV | Upload leaf photo → disease name + treatment |
-| 📊 Market Prices | ARIMA (statsmodels) | 6-month price forecast with Recharts graph |
-| 🎙️ Voice Interface | Web Speech API | Voice navigation in EN/HI/KN/TE |
-| 🌍 Multilingual | Built-in i18n | English · Hindi · Kannada · Telugu |
+| 🌾 **Crop Recommendation** | `Random Forest` (scikit-learn) | Recommends optimal crops based on exact Nitrogen, P, K, pH, temperature, and humidity inputs. |
+| 🧪 **Fertilizer Advisory** | Deep ML Rule Engine | Provides precise, localized NPK dosage instructions and irrigation scheduling. |
+| 🌤️ **Live Weather** | **Open-Meteo** + Geo-Caching | Current & 7-day hyper-local agricultural weather forecasts with automatic alert synthesis. |
+| 🔬 **Disease Engine** | Ensemble **HuggingFace MobileNetV2** | Upload, Drag-and-Drop, or Paste external images! It uses advanced plant-disease ML classification coupled with heuristic color-fallback to diagnose plant health. |
+| 📊 **Market Forecasting** | **ARIMA** (statsmodels) + Recharts | Projects local crop prices 6 months into the future using time-series AI logic. |
+| 🎙️ **Voice AI Assistant** | **Smart Intent Router** | Speaks to you! Recognizes entities (crop names), silently queries the backend, and verbally reads out farming advice via speech synthesis. |
+| 🌍 **Auto-Translation** | `react-i18next` & `deep-translator` | **Native support for English, Hindi, Kannada, and Telugu**. The ML server instantly intercepts English medical/market ML outputs and auto-translates them to your UI language in real time, while reverse-translating any foreign input back into English! |
 
 ---
 
-## 🌐 API Endpoints
+## 🌐 API Interaction Architecture
 
-### Node.js (`:5000`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Health check |
-| POST | `/api/crop` | Crop recommendation |
-| POST | `/api/fertilizer` | Fertilizer advice |
-| POST | `/api/disease` | Disease detection (multipart) |
-| POST | `/api/price` | Market price forecast |
-| GET | `/api/weather?city=Bangalore` | Weather data |
-| GET | `/api/districts` | List of districts |
+The Node.js backend (`:5000`) acts as a secure reverse-proxy for the Flask ML Engine (`:5001`).
 
-### Flask ML Server (`:5001`)
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/predict/crop` | Random Forest crop prediction |
-| POST | `/predict/fertilizer` | Fertilizer rule engine |
-| POST | `/predict/disease` | Image disease analysis |
-| POST | `/predict/price` | ARIMA price forecast |
+### Node.js Gateway 
+| Endpoint | Functionality |
+|----------|-------------|
+| `GET /api/weather` | Handles latitude/longitude caching and hits Open-Meteo for live agricultural forecasts. |
+| `POST /api/crop`, `/api/fertilizer`, `/api/price` | Forwards clean payloads to the Flask API. |
+| `POST /api/disease` | Intercepts Web Drag-and-Drop blobs & Clipboard base64 strings and reliably streams them to Flask. |
+
+### Flask ML Server
+| Endpoint | Functionality |
+|----------|-------------|
+| `POST /predict/disease` | Processes image bytes. Auto-translates disease name, medical symptoms, and treatment action plans based on requested UI language! |
+| `POST /predict/price` | Runs ARIMA forecasting. Magically reverse-translates requested foreign crop names into English before passing them to the strict ML system! |
 
 ---
 
-## 🧪 Test Sample Data
+## 🧪 Sample Payloads to Test
 
-**Crop Recommendation (predicts: Rice)**
+**Live Market Price (with translation support)**
+```json
+{ 
+  "crop": "మొక్కజొన్న", // Telugu for Maize is instantly understood!
+  "district": "Bangalore", 
+  "months": 6,
+  "lang": "te" 
+}
+```
+
+**Scientific Crop Recommendation**
 ```json
 { "N": 90, "P": 42, "K": 43, "pH": 6.5, "temperature": 25, "humidity": 82, "rainfall": 202 }
 ```
-
-**Fertilizer Advisory**
-```json
-{ "crop": "rice", "N": 40, "P": 20, "K": 20, "area": 1.5 }
-```
-
-**Market Price**
-```json
-{ "crop": "wheat", "district": "Bangalore", "months": 6 }
-```
-
----
-
-## ☁️ Cloud Deployment
-
-### Free Tier Options
-| Service | Use For |
-|---------|---------|
-| Render.com | Node.js backend |
-| Railway.app | Flask ML server |
-| Vercel / Netlify | React frontend |
-| MongoDB Atlas | Database (if extended) |
-
-### Docker (optional)
-```bash
-# Each service has its own Dockerfile (add as needed)
-docker build -t krishi-ml ./ml-server
-docker build -t krishi-backend ./backend
-docker build -t krishi-frontend ./frontend
-```
-
----
-
-## 📜 License
-MIT – Free to use, modify and distribute for agricultural purposes.

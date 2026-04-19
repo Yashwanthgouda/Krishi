@@ -1,44 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { LanguageProvider } from './context/LanguageContext';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-import MobileNav from './components/MobileNav';
-// import VoiceButton from './components/VoiceButton';
-import Dashboard from './pages/Dashboard';
-import CropAdvisor from './pages/CropAdvisor';
-import FertilizerGuide from './pages/FertilizerGuide';
-import WeatherPage from './pages/WeatherPage';
-import DiseaseDetector from './pages/DiseaseDetector';
-import MarketPrices from './pages/MarketPrices';
-import VoiceAssistant from './pages/VoiceAssistant';
-import './index.css';
+import { Layout } from './components/layout/Layout';
+import { Home } from './pages/Home';
+import { CropRecommend } from './pages/CropRecommend';
+import { Fertilizer } from './pages/Fertilizer';
+import { Weather } from './pages/Weather';
+import { DiseaseDetect } from './pages/DiseaseDetect';
+import { MandiPrices } from './pages/MandiPrices';
 
-export default function App() {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-
+function App() {
   return (
-    <LanguageProvider>
-      <BrowserRouter>
-        <div className="app-container">
-          <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
-          <div className="main-content">
-            <Header onMenuClick={() => setSidebarOpen(true)} />
-            <main className="content-inner">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/crop" element={<CropAdvisor />} />
-                <Route path="/fertilizer" element={<FertilizerGuide />} />
-                <Route path="/weather" element={<WeatherPage />} />
-                <Route path="/disease" element={<DiseaseDetector />} />
-                <Route path="/market" element={<MarketPrices />} />
-                <Route path="/voice" element={<VoiceAssistant />} />
-              </Routes>
-            </main>
-          </div>
-          <MobileNav />
-        </div>
-      </BrowserRouter>
-    </LanguageProvider>
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/crop" element={<CropRecommend />} />
+          <Route path="/fertilizer" element={<Fertilizer />} />
+          <Route path="/weather" element={<Weather />} />
+          <Route path="/disease" element={<DiseaseDetect />} />
+          <Route path="/prices" element={<MandiPrices />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 }
+
+export default App;

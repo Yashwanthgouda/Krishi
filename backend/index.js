@@ -23,7 +23,11 @@ if (FLASK_URL.endsWith('/')) {
 const OWM_KEY = process.env.OPENWEATHERMAP_API_KEY || '';
 
 // Middleware
-app.use(cors());
+// Restrict CORS to the Vercel frontend in production; allow all in dev
+const allowedOrigins = process.env.FRONTEND_URL
+  ? [process.env.FRONTEND_URL]
+  : true; // allow all in local dev
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -121,6 +125,7 @@ app.post('/api/disease', upload.single('image'), async (req, res) => {
         filename: req.file.originalname || 'leaf.jpg',
         contentType: req.file.mimetype || 'image/jpeg',
       });
+      if (req.body.lang) formData.append('lang', req.body.lang);
       response = await axios.post(`${FLASK_URL}/predict/disease`, formData, {
         headers: formData.getHeaders(),
         timeout: 60000,
@@ -128,7 +133,7 @@ app.post('/api/disease', upload.single('image'), async (req, res) => {
     } else if (req.body.imageBase64) {
       response = await axios.post(
         `${FLASK_URL}/predict/disease`,
-        { imageBase64: req.body.imageBase64 },
+        { imageBase64: req.body.imageBase64, lang: req.body.lang },
         { timeout: 60000 }
       );
     } else {
@@ -173,61 +178,93 @@ app.post('/api/price', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 app.get('/api/weather', async (req, res) => {
   try {
-    const city = req.query.city || req.query.lat
-      ? undefined
-      : 'Bangalore';
-    const lat = req.query.lat;
-    const lon = req.query.lon;
+    let lat = req.query.lat;
+    let lon = req.query.lon;
+    let city = req.query.city || 'Bangalore';
 
-    let currentUrl, forecastUrl;
-    const apiKey = OWM_KEY || 'demo';
-
-    if (lat && lon) {
-      currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-      forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-    } else {
-      const c = req.query.city || 'Bangalore';
-      currentUrl = `https://api.openweathermap.org/data/2.5/weather?q=${c}&appid=${apiKey}&units=metric`;
-      forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${c}&appid=${apiKey}&units=metric`;
+    // 1. If lat/lon not provided, use Geocoding API to get them
+    if (!lat || !lon) {
+      if (global.GEO_CACHE && global.GEO_CACHE[city]) {
+         lat = global.GEO_CACHE[city].lat;
+         lon = global.GEO_CACHE[city].lon;
+         city = global.GEO_CACHE[city].city;
+      } else {
+         const geoRes = await axios.get(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`, { timeout: 8000 });
+         if (geoRes.data.results && geoRes.data.results.length > 0) {
+           lat = geoRes.data.results[0].latitude;
+           lon = geoRes.data.results[0].longitude;
+           city = geoRes.data.results[0].name;
+           if(!global.GEO_CACHE) global.GEO_CACHE = {};
+           global.GEO_CACHE[city] = { lat, lon, city };
+         } else {
+           // Fallback robustly
+           lat = 12.9716; lon = 77.5946; city = 'Bangalore';
+         }
+      }
     }
 
-    if (!OWM_KEY || OWM_KEY === '') {
-      // Return mock data if no API key
-      return res.json(getMockWeather(req.query.city || 'Bangalore'));
-    }
+    // 2. Fetch from Open-Meteo Free API (Requires NO API key)
+    const meteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto`;
+    const meteoRes = await axios.get(meteoUrl, { timeout: 8000 });
+    const d = meteoRes.data;
 
-    const [currentRes, forecastRes] = await Promise.all([
-      axios.get(currentUrl, { timeout: 8000 }),
-      axios.get(forecastUrl, { timeout: 8000 }),
-    ]);
+    // 3. Map WMO Weather Codes to Human Text
+    const WMO_CODES = {
+      0: { desc: 'Clear sky', icon: '01d' },      1: { desc: 'Mainly clear', icon: '01d' },
+      2: { desc: 'Partly cloudy', icon: '02d' },  3: { desc: 'Overcast', icon: '04d' },
+      45: { desc: 'Fog', icon: '50d' },           48: { desc: 'Rime fog', icon: '50d' },
+      51: { desc: 'Light drizzle', icon: '09d' }, 53: { desc: 'Moderate drizzle', icon: '09d' },
+      55: { desc: 'Dense drizzle', icon: '09d' }, 61: { desc: 'Slight rain', icon: '10d' },
+      63: { desc: 'Moderate rain', icon: '10d' }, 65: { desc: 'Heavy rain', icon: '10d' },
+      71: { desc: 'Slight snow', icon: '13d' },   75: { desc: 'Heavy snow', icon: '13d' },
+      80: { desc: 'Showers', icon: '09d'},        82: { desc: 'Violent showers', icon: '09d' },
+      95: { desc: 'Thunderstorm', icon: '11d' },  99: { desc: 'Severe Thunderstorm', icon: '11d' },
+    };
 
-    const current = currentRes.data;
-    const forecast = processOWMForecast(forecastRes.data);
-    const alerts = generateWeatherAlerts(current);
+    const getWMO = (code) => WMO_CODES[code] || { desc: 'Clear', icon: '01d' };
+    const curWMO = getWMO(d.current.weather_code);
+
+    // 4. Construct Forecast Payload
+    const forecast = d.daily.time.slice(0, 7).map((date, i) => ({
+      date: date,
+      maxTemp: Math.round(d.daily.temperature_2m_max[i]),
+      minTemp: Math.round(d.daily.temperature_2m_min[i]),
+      description: getWMO(d.daily.weather_code[i]).desc,
+      icon: getWMO(d.daily.weather_code[i]).icon,
+      humidity: Math.round(d.current.relative_humidity_2m),
+      windSpeed: Math.round(d.current.wind_speed_10m),
+      rain: d.daily.precipitation_sum[i] || 0
+    }));
+
+    // 5. Adapting existing alerts logic structure
+    const mockCurrentForAlerts = { 
+      main: { temp: d.current.temperature_2m, humidity: d.current.relative_humidity_2m },
+      wind: { speed: d.current.wind_speed_10m / 3.6 } // existing generator multiplies by 3.6
+    };
+    const alerts = generateWeatherAlerts(mockCurrentForAlerts);
 
     res.json({
       success: true,
-      city: current.name,
-      country: current.sys.country,
+      city: city,
+      country: 'IN',
       current: {
-        temp: Math.round(current.main.temp),
-        feelsLike: Math.round(current.main.feels_like),
-        humidity: current.main.humidity,
-        windSpeed: Math.round(current.wind.speed * 3.6), // m/s to km/h
-        description: current.weather[0].description,
-        icon: current.weather[0].icon,
-        pressure: current.main.pressure,
-        visibility: current.visibility ? Math.round(current.visibility / 1000) : null,
-        sunrise: current.sys.sunrise,
-        sunset: current.sys.sunset,
+        temp: Math.round(d.current.temperature_2m),
+        feelsLike: Math.round(d.current.temperature_2m),
+        humidity: Math.round(d.current.relative_humidity_2m),
+        windSpeed: Math.round(d.current.wind_speed_10m), // already km/h
+        description: curWMO.desc,
+        icon: curWMO.icon,
+        pressure: 1013,
+        visibility: 10,
+        sunrise: 0, sunset: 0
       },
       forecast,
-      alerts,
+      alerts
     });
+
   } catch (err) {
     console.error('Weather API error:', err.message);
-    // Return mock data on error
-    res.json(getMockWeather(req.query.city || 'Bangalore'));
+    res.json({ ...getMockWeather(req.query.city || 'Bangalore'), _errorTrace: err.message }); // Ultimate fallback
   }
 });
 
